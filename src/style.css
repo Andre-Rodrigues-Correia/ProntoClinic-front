@@ -1,0 +1,28 @@
+*{
+    margin: 0;
+    padding: 0;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+:root {
+    --primary-color: #525ceb;
+    --secondary-color: #3d3b40;
+    --terciary-color: #f0f0f0;
+    --primary-text-color: rgb(0, 0, 0);
+    --second-text-color: rgb(255, 255, 255);
+    /* Adicione outras cores conforme necessário */
+  }
+
+.create-button {
+    background-color: var(--primary-color);
+    color: var(--second-text-color);
+    cursor: pointer;
+    border-radius: 5px;
+    width: 20%;
+    padding: 10px;
+}
+
+.create-button:hover{
+    background-color: white;
+    color: var(--primary-text-color);
+}

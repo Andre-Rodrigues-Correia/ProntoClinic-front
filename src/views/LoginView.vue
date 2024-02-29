@@ -1,0 +1,87 @@
+<template>
+    <div class="login-container">
+      <h2>Login</h2><br/>
+      <form @submit.prevent="login" class="form-container">
+        <label for="mail">E-mail:</label>
+        <input type="mail" v-model="mail" required>
+        
+        <label for="password">Senha:</label>
+        <input type="password" v-model="password" required>
+  
+        <button type="submit">Entrar</button>
+      </form>
+    </div>
+  </template>
+  
+  <script>
+  export default {
+    data() {
+      return {
+        mail: '',
+        password: '',
+      };
+    },
+    methods: {
+      async login() {
+        try {
+          const response = await this.$axios.post('/auth/signin-doctor', {
+            mail: this.mail,
+            password: this.password,
+          });
+  
+          // Salvar o token JWT no armazenamento local
+          console.log(response);
+          localStorage.setItem('token', response.data.token);
+  
+          // Redirecionar para a rota "home"
+          this.$router.push({ name: 'home' });
+        } catch (error) {
+          console.error('Erro ao fazer login:', error);
+          // Tratar erros de login, exibir mensagem ao usuário, etc.
+        }
+      },
+    },
+  };
+  </script>
+  
+  <style scoped>
+  .login-container {
+    max-width: 400px;
+    margin: 2rem auto;
+
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.40);
+  }
+
+  .form-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  label {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  input {
+    margin-bottom: 10px;
+    padding: 8px;
+  }
+  
+  button {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background-color: var(--secondary-color);
+  }
+  </style>
+  
