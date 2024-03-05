@@ -14,8 +14,8 @@
       <input v-model="patient.birthday" type="date" id="patientBirthday" required><br/>
       <label for="patientSex">Sexo:</label><br/>
       <select v-model="patient.biologicalSex" id="patientSex" required>
-        <option value="Masculino">Masculino</option>
-        <option value="Feminino">Feminino</option>
+        <option value="M">Masculino</option>
+        <option value="F">Feminino</option>
       </select><br/><br/>
 
       
@@ -26,7 +26,10 @@
 </template>
 
 <script>
+  import { jwtDecode } from "jwt-decode";
+
   export default {
+    
     name: 'CreatePatient',
     data() {
       return {
@@ -37,13 +40,39 @@
           phone: null,
           birthday: null,
           biologicalSex: null,
+          clinic: null
         }
       };
     },
     methods: {
-      createPatient(){
-        alert(this.patient.name)
-        console.log(this.patient)
+
+      async createPatient(){
+
+        try {
+          const token = localStorage.getItem('token');
+          const config = {
+            headers: {
+              Authorization: token,
+            },
+          };
+
+          const decodedToken = jwtDecode(token);
+
+          this.patient.clinic = decodedToken.clinicId;
+
+          console.log(decodedToken)
+
+
+
+          await this.$store.dispatch('patients/addPatient', this.patient);
+          alert('Paciente cadastrado com sucesso!');
+          this.$router.push({ name: 'home' });
+        } catch (error) {
+          console.error('Erro ao cadastrar paciente!', error);
+          // Tratar erros de login, exibir mensagem ao usuário, etc.
+        }
+        
+        
       }
     }
   }

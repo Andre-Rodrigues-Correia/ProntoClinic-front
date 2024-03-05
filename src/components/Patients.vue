@@ -14,72 +14,79 @@
           </div>
           <div>
             Nome: {{ patient.name }}<br/>
-            Informações: {{ patient.details }}<br/>
+            Informações: {{ patient.mail }}<br/>
             Tel: {{ patient.phone }}
             
           </div>
           <div class="buttons-content">
-            <button @click="confirmDelete(patient)"><font-awesome-icon class="icons" icon="eye" /></button>
+            <button @click="viewPatient(patient)"><font-awesome-icon class="icons" icon="eye" /></button>
             <button @click="editPatient(patient)"><font-awesome-icon class="icons" :icon="['fas', 'pen-to-square']" /></button>
-            <button @click="viewPatient(patient)"><font-awesome-icon class="icons" :icon="['fas', 'trash']" /></button>
+            <button @click="deletePatient(patient)"><font-awesome-icon class="icons" :icon="['fas', 'trash']" /></button>
           </div>
           
         </li>
       </ul>
     </div>
+    <PatientModal :patient="selectedPatient" v-if="showModal" @close="closeModal"/>
+    <EditPatientModal :patient="selectedPatient" v-if="showModalEdit" @save="saveChanges" @close="closeEditModal"/>
+
   </template>
   
   <script>
-//   import PatientDetails from './PatientDetails.vue'; // Substitua pelo caminho correto do seu componente
-//   import EditPatientForm from './EditPatientForm.vue'; // Substitua pelo caminho correto do seu componente
-//   import DeleteConfirmationModal from './DeleteConfirmationModal.vue'; // Substitua pelo caminho correto do seu componente
+import patientService from '@/services/patientService';
+import PatientModal from './PatientModal.vue';
+import EditPatientModal from './EditPatient.vue'
+
 
 
 
 export default {
     name: 'Patients',
+    components: {
+      PatientModal,
+      EditPatientModal
+    },
     data () {
         return {
-            patients: [
-                { id: 1, name: 'Paciente 1', details: 'Detalhes do paciente 1', phone: 28999999999, picture: 'https://media.licdn.com/dms/image/D4D03AQFQy51Nx2tyvQ/profile-displayphoto-shrink_800_800/0/1694208030122?e=2147483647&v=beta&t=OpDnha5BZuRD8Cf2wBvRcziHOqAlcyl9yDj78h0VohI'},
-                { id: 2, name: 'Paciente 2', details: 'Detalhes do paciente 2', phone: 28999999999, picture: ''},
-            ]
+            patients: [],
+            showModal: false,
+            showModalEdit: false,
+            selectedPatient: null
         } 
+    },
+    created (){
+      this.getData();
+    },
+    methods: {
+      async getData(){
+        // this.patients = await patientService.getPatients();
+        await this.$store.dispatch('patients/fetchPatients');
+        this.patients = this.$store.state.patients.patients;
+      },
+      closeModal(){
+        this.showModal = false
+      },
+      closeEditModal(){
+        this.showModalEdit = false
+      },
+      viewPatient(patient){
+        this.selectedPatient = patient
+        this.showModal = true
+      },
+      editPatient(patient){
+        this.selectedPatient = patient
+        this.showModalEdit = true
+      },
+      async saveChanges(editedPatient){
+        await this.$store.dispatch('patients/updatePatient', editedPatient);
+        this.showModalEdit = false
+      },
+      async deletePatient(patient){
+        await this.$store.dispatch('patients/deletePatient', patient._id);
+        this.patients = this.$store.state.patients.patients;
+      }
     }
 }
-  
-  
-  let selectedPatient = null;
-  let selectedAction = null;
-  
-  const viewPatient = (patient) => {
-    selectedPatient = patient;
-    selectedAction = 'view';
-  };
-  
-  const editPatient = (patient) => {
-    selectedPatient = patient;
-    selectedAction = 'edit';
-  };
-  
-  const confirmDelete = (patient) => {
-    selectedPatient = patient;
-    selectedAction = 'delete';
-  };
-  
-  const closeDetails = () => {
-    selectedPatient = null;
-    selectedAction = null;
-  };
-  
-  const deletePatient = () => {
-    // Lógica para excluir o paciente
-    const index = patients.findIndex((p) => p.id === selectedPatient.id);
-    if (index !== -1) {
-      patients.splice(index, 1);
-    }
-    closeDetails();
-  };
   </script>
 
 <style scoped>

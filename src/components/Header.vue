@@ -7,11 +7,8 @@
             </h1>
 
             <nav>
-                <RouterLink class="header-button" to="/agenda">AGENDA</RouterLink>
-                <RouterLink class="header-button" to="/agenda">PACIENTES</RouterLink>
-                <RouterLink class="header-button" to="/agenda">ATENDIMENTOS</RouterLink>
-                <RouterLink class="header-button" to="/agenda">PROFISSIONAIS DA SAÚDE</RouterLink>
-                <RouterLink class="header-button" to="/agenda">CONFIGURAÇÕES</RouterLink>
+                <RouterLink class="header-button" to="/pacientes">PACIENTES</RouterLink>
+                <RouterLink class="header-button" to="/atendimentos">ATENDIMENTOS</RouterLink>
                 <button class="header-button" @click="logout">SAIR</button>
             
             </nav>
