@@ -26,7 +26,6 @@ const actions = {
  async fetchPatients({ commit }) {
     try {
       const response = await patientService.getPatients();
-      console.log(response)
       commit('SET_PATIENTS', response);
     } catch (error) {
       console.error('Error fetching patients', error);
@@ -42,7 +41,6 @@ const actions = {
   },
   async updatePatient({ commit }, patient ) {
     try {
-      console.log(patient)
       const response = await patientService.editPatient(patient);
       commit('UPDATE_PATIENT', patient );
     } catch (error) {

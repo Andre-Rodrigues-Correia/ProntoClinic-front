@@ -21,12 +21,6 @@ import { RouterLink } from 'vue-router';
 
 export default {
     name: 'Header',
-    props: {
-        buttons: {
-            type: Array,
-            required: true,
-        },
-    },
     methods: {
         logout(){
             localStorage.removeItem('token');
@@ -53,6 +47,7 @@ h1 {
 
 .content-container {
     width: 100%;
+
     display: flex;
     overflow: auto;
     align-items: center;
@@ -64,9 +59,9 @@ h1 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #f5f5f5; /* Adicionei uma cor de fundo para melhor visualização */
+
     padding: 1rem;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow */
+
     
 }
 
@@ -81,12 +76,12 @@ h1 {
     border: solid 1px;
     border-radius: 10px;
     margin-left: 1.5rem;
-    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+
 }
 
 .header-button:hover {
     background-color: #8188f5;
-    box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 </style>
 

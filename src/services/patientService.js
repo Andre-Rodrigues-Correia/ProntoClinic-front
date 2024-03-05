@@ -21,6 +21,22 @@ const patientService = {
     }
   },
 
+  getPatientById: async (patientId) => {
+    try {
+      const token = userService.getToken()
+      const config = {
+        headers: {
+            Authorization: token,
+          },
+      }
+      const response = await axios.get(`${BASE_URL}/${patientId}`, config);
+      return response.data.message;
+    } catch (error) {
+      console.error('Erro ao atualizar o usuário:', error);
+      throw error;
+    }
+  },
+
   createPatient: async (patient) => {
     try {
       const token = userService.getToken()
@@ -69,6 +85,9 @@ const patientService = {
       throw error;
     }
   },
+
+
+
 
 
 };

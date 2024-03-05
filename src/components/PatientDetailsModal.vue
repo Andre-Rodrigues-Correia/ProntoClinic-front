@@ -20,7 +20,7 @@
 
 <script>
 export default {
-  name: 'PatientModal',
+  name: 'PatientDetailModal',
   props: {
     patient: {
       type: Object,
@@ -65,9 +65,6 @@ export default {
   box-shadow: 0 0 10px rgba(68, 67, 67, 0.4);
 }
 
-.modal-content {
-  /* Adicione estilos conforme necessário */
-}
 
 button {
   margin-top: 10px;

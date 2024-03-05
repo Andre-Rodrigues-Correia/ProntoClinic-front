@@ -19,6 +19,7 @@
             
           </div>
           <div class="buttons-content">
+            <button @click="appointment(patient)"><span>Iniciar atendimento</span></button>
             <button @click="viewPatient(patient)"><font-awesome-icon class="icons" icon="eye" /></button>
             <button @click="editPatient(patient)"><font-awesome-icon class="icons" :icon="['fas', 'pen-to-square']" /></button>
             <button @click="deletePatient(patient)"><font-awesome-icon class="icons" :icon="['fas', 'trash']" /></button>
@@ -27,14 +28,14 @@
         </li>
       </ul>
     </div>
-    <PatientModal :patient="selectedPatient" v-if="showModal" @close="closeModal"/>
+    <PatientDetailsModal :patient="selectedPatient" v-if="showModal" @close="closeModal"/>
     <EditPatientModal :patient="selectedPatient" v-if="showModalEdit" @save="saveChanges" @close="closeEditModal"/>
 
   </template>
   
   <script>
 import patientService from '@/services/patientService';
-import PatientModal from './PatientModal.vue';
+import PatientDetailsModal from './PatientDetailsModal.vue';
 import EditPatientModal from './EditPatient.vue'
 
 
@@ -43,7 +44,7 @@ import EditPatientModal from './EditPatient.vue'
 export default {
     name: 'Patients',
     components: {
-      PatientModal,
+      PatientDetailsModal,
       EditPatientModal
     },
     data () {
@@ -84,6 +85,9 @@ export default {
       async deletePatient(patient){
         await this.$store.dispatch('patients/deletePatient', patient._id);
         this.patients = this.$store.state.patients.patients;
+      },
+      appointment(patient){
+        this.$router.push({ name: 'atendimentos', query: { patientId: patient._id } });
       }
     }
 }
@@ -140,4 +144,4 @@ export default {
   }
 
 </style>
-  
+  ./PatientDetailsModal.vue
