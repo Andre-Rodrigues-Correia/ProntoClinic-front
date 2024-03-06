@@ -16,8 +16,8 @@ library.add(faEye, faTrash, faEdit, faUser)
 const app = createApp(App)
 
 const axiosInstance = axios.create({
-    // baseURL: 'https://prontoclinic.onrender.com',
-    baseURL: 'http://localhost:3000', // Substitua com o endereço real da sua API
+    baseURL: 'https://prontoclinic.onrender.com',
+    //baseURL: 'http://localhost:3000', // Substitua com o endereço real da sua API
   });
   
 
