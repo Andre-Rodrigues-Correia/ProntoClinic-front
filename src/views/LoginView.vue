@@ -7,8 +7,10 @@
         
         <label for="password">Senha:</label>
         <input type="password" v-model="password" required>
-  
-        <button type="submit">Entrar</button>
+        <div class="buttons-content">
+          <button type="submit">Entrar</button>
+          <button @click="this.$router.push({ name: 'signup' });">Cadastre-se</button>
+        </div>
       </form>
     </div>
   </template>
@@ -59,6 +61,12 @@
     display: flex;
     flex-direction: column;
   }
+
+  .buttons-content{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
   
   label {
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
@@ -72,12 +80,14 @@
   }
   
   button {
+    width: 100%;
     background-color: var(--primary-color);
     color: white;
     padding: 10px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    margin: 0.5rem;
   }
 
   button:hover {
