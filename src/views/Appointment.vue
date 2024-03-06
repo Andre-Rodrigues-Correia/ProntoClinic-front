@@ -8,7 +8,6 @@
       <div class="header-appointment-content">
       <header>
         <nav>
-
           <button v-if="!appointmentStarted" class="header-button" @click="startAppointiment('initial')">Iniciar</button>
           <button v-else class="header-button">{{ appointmentTime }}</button>
           <button class="header-button" @click="selectOption('historic')">Histórico</button>
@@ -22,17 +21,15 @@
 
     <div class="appointment-content">
       <div v-if="selectedOption === 'initial'">
-        <h1>
-          Ainda por fazer, clique em iniciar
-        </h1>
+        <HistoricalAppointments />
       </div>
 
       <div v-if="selectedOption === 'historic'">
-        <h1>Historico - A fazer</h1>
+        <HistoricalAppointments />
       </div>
 
-      <div v-if="selectedOption === 'record'">
-
+      <div class="medical-record" v-if="selectedOption === 'record'">
+        <MedicalRecord />
       </div>
 
       <div v-if="selectedOption === 'exams'">
@@ -48,6 +45,8 @@
 
     </div>
 
+    <footer><h2>Footer</h2></footer>
+
     <!-- <footer>
       <button @click="navigate('previous')">Voltar</button>
       <button @click="navigate('next')">Próximo</button>
@@ -60,11 +59,17 @@
 import AppointmentHeader from '@/components/AppointmentHeader.vue'
 import AutoCompleteText from '@/components/AutoCompleteText.vue';
 import InitialAppointment from '@/components/appointmentComponents/InitialAppointment.vue'
+import HistoricalAppointments from '@/components/appointmentComponents/HistoricalAppointments.vue'
+import MedicalRecord from '@/components/appointmentComponents/MedicalRecord.vue'
+
+
 export default {
   components: {
     AppointmentHeader,
     AutoCompleteText,
-    InitialAppointment
+    InitialAppointment,
+    HistoricalAppointments,
+    MedicalRecord
   
   },
   data() {
@@ -133,9 +138,20 @@ export default {
 
   }
 
+  .appointment-content{
+    display: flex;
+    width: 80%;
+    margin: auto;
+  }
+
 .header-button:hover {
     background-color: #8188f5;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.medical-record{
+  display: flex;
+  width: 100%;
 }
 
 header {

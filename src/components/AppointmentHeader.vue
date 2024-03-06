@@ -22,7 +22,7 @@
           </div>
           <div class="details-content">
             <label>Telefone:</label>
-            <label>{{ patient.name }}</label>
+            <label>{{ patient.phone }}</label>
           </div>
         </div>
   

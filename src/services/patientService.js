@@ -1,8 +1,8 @@
 import axios from 'axios';
 import userService from './userService';
 
-//const BASE_URL = "http://localhost:3000/patient"
-const BASE_URL = "https://prontoclinic.onrender.com/patient"
+const BASE_URL = "http://localhost:3000/patient"
+//const BASE_URL = "https://prontoclinic.onrender.com/patient"
 
 
 const patientService = {
