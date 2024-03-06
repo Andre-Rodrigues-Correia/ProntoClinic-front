@@ -32,7 +32,6 @@ const router = createRouter({
       path: '/signup',
       name: 'signup',
       component: SignupView,
-      meta: { requiresAuth: true }
     },
     {
       path: '/validate',
