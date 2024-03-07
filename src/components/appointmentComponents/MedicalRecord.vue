@@ -2,41 +2,41 @@
 
     <div class="medical-medical-content">
         <div>
-            <form @submit.prevent="submitForm('exams')">
+            <form class="form-content" @submit.prevent="submitForm('exams')">
                 <div>
-                <label for="complaint">Reclamação:</label>
+                <label class="label-content" for="complaint">Reclamação:</label>
                 <textarea class="textarea-content" id="complaint" v-model="record.anamnese.complaint"></textarea>
                 </div>
 
                 
 
                 <div>
-                <label for="historyPresentIllness">História do problema atual:</label>
+                <label class="label-content" for="historyPresentIllness">História do problema atual:</label>
                 <textarea class="textarea-content" id="historyPresentIllness" v-model="record.anamnese.historyPresentIllness"></textarea>
                 </div>
 
                 <div>
-                <label for="historyPreviousIllness">História de problema anterior</label>
+                <label class="label-content" for="historyPreviousIllness">História de problema anterior</label>
                 <textarea class="textarea-content" id="historyPreviousIllness" v-model="record.anamnese.historyPreviousIllness"></textarea>
                 </div>
 
                 <div>
-                <label for="previousMedications">Medicamentos anteriores:</label>
+                <label class="label-content" for="previousMedications">Medicamentos anteriores:</label>
                 <textarea class="textarea-content" id="previousMedications" v-model="record.anamnese.previousMedications"></textarea>
                 </div>
 
                 <div>
-                <label for="allergies">Alergias:</label>
+                <label class="label-content" for="allergies">Alergias:</label>
                 <textarea class="textarea-content" id="allergies" v-model="record.anamnese.allergies"></textarea>
                 </div>
 
                 <div>
-                <label for="observations">Observações:</label>
+                <label class="label-content" for="observations">Observações:</label>
                 <textarea class="textarea-content" id="observations" v-model="record.anamnese.observations"></textarea>
                 </div>
   
                 <div>
-                    <label for="othersInformations">Outras informações:</label>
+                    <label class="label-content" for="othersInformations">Outras informações:</label>
                     <textarea class="textarea-content" id="othersInformations" v-model="record.anamnese.othersInformations"></textarea>
                 </div>
                 
@@ -115,7 +115,7 @@ export default {
     }
 
 
-    form {
+    .form-content {
         flex: 1;
         flex-direction: column;
         padding: 2rem;
@@ -128,7 +128,7 @@ export default {
         margin: auto;
     }
 
-    label {
+    .label-content {
         display: flex;
         width: 100%;
     }
