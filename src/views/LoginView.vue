@@ -16,11 +16,15 @@
   </template>
   
   <script>
+import userService from '@/services/userService';
+
   export default {
     data() {
       return {
         mail: '',
         password: '',
+        clinic: null,
+        doctor: null
       };
     },
     methods: {
@@ -29,13 +33,20 @@
           const response = await this.$axios.post('/auth/signin-doctor', {
             mail: this.mail,
             password: this.password,
-          });
-  
-          // Salvar o token JWT no armazenamento local
-          console.log(response);
-          localStorage.setItem('token', response.data.token);
-  
-          // Redirecionar para a rota "home"
+          });          
+          
+          const token = response.data.token
+
+          localStorage.setItem('token', token);
+
+          const payloadToken = userService.getPayloadToken(token)
+
+          await this.$store.dispatch('doctor/setDoctor', payloadToken._id);
+          this.doctor = this.$store.state.doctor.doctor;
+
+          await this.$store.dispatch('clinic/setClinic', payloadToken.clinicId);
+          this.clinic = this.$store.state.clinic.clinic;
+          
           this.$router.push({ name: 'home' });
         } catch (error) {
           console.error('Erro ao fazer login:', error);

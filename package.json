@@ -21,7 +21,8 @@
     "vue-router": "^4.2.5",
     "vue-suggestion": "^2.1.0",
     "vue-toast2": "^2.0.5",
-    "vuex": "^4.1.0"
+    "vuex": "^4.1.0",
+    "vuex-persistedstate": "^4.1.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.3",

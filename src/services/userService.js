@@ -1,17 +1,36 @@
-import axios from 'axios';
+
 
 const userService = {
-  getUser: async (userId) => {
-    try {
-      const response = await axios.get(`/api/users/${userId}`);
-      return response.data;
-    } catch (error) {
-      console.error('Erro ao recuperar o usuário:', error);
-      throw error;
-    }
-  },
   getToken(){
     return localStorage.getItem('token');
+  },
+  getPayloadToken(token){
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const payload = JSON.parse(atob(base64));
+    return payload
+  },
+  async setClinicAndDoctorId(store){
+    const token = this.getToken()
+    const payloadToken = this.getPayloadToken(token);
+    console.log(payloadToken)
+    
+    await store.dispatch('doctor/setDoctor', payloadToken._id);
+
+    await store.dispatch('clinic/setClinic', payloadToken.clinicId);
+
+  },
+  getClinicId(){
+    const token = this.getToken();
+    const payloadToken = this.getPayloadToken(token);
+
+    return payloadToken.clinicId;
+  },
+  getDoctorId(){
+    const token = this.getToken();
+    const payloadToken = this.getPayloadToken(token);
+
+    return payloadToken._id;
   }
 };
 

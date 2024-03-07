@@ -14,43 +14,39 @@
           <button class="header-button" @click="selectOption('record')">Prontuário</button>
           <button class="header-button" @click="selectOption('exams')">Exames</button>
           <button class="header-button" @click="selectOption('recipes')">Receitas</button>
-          <button class="header-button" @click="selectOption('finish')">Finalizar</button>
+          <button class="header-button" @click="finishAppointment('finish')">Finalizar</button>
         </nav>
       </header>
     </div>
 
     <div class="appointment-content">
       <div v-if="selectedOption === 'initial'">
-        <HistoricalAppointments />
+        <InitialAppointment />
       </div>
 
       <div v-if="selectedOption === 'historic'">
-        <HistoricalAppointments />
+        <HistoricalAppointments  @sendMenu="navigateAppointment"/>
       </div>
 
       <div class="medical-record" v-if="selectedOption === 'record'">
-        <MedicalRecord />
+        <MedicalRecord @sendMenu="navigateAppointment"/>
       </div>
 
-      <div v-if="selectedOption === 'exams'">
-
+      <div class="medical-record" v-if="selectedOption === 'exams'">
+        <Exams @sendMenu="navigateAppointment"/>
       </div>
 
       <div v-if="selectedOption === 'recipes'">
-
+        <Recipes @sendMenu="navigateAppointment"/>
       </div>
-      <div v-if="selectedOption === 'recipes'">
 
+      <div v-if="selectedOption === 'finish'">
+      
+        <button @click="navigateAppointment('recipes')">Voltar</button>
+        <button @click="finishAppointment">Finalizar atendimetno</button>
       </div>
 
     </div>
-
-    <footer><h2>Footer</h2></footer>
-
-    <!-- <footer>
-      <button @click="navigate('previous')">Voltar</button>
-      <button @click="navigate('next')">Próximo</button>
-    </footer> -->
     </div>
   </div>
 </template>
@@ -61,6 +57,10 @@ import AutoCompleteText from '@/components/AutoCompleteText.vue';
 import InitialAppointment from '@/components/appointmentComponents/InitialAppointment.vue'
 import HistoricalAppointments from '@/components/appointmentComponents/HistoricalAppointments.vue'
 import MedicalRecord from '@/components/appointmentComponents/MedicalRecord.vue'
+import Exams from '@/components/appointmentComponents/Exams.vue';
+import Recipes from '@/components/appointmentComponents/Recipes.vue';
+import recordService from '@/services/recordService';
+import userService from '@/services/userService';
 
 
 export default {
@@ -69,7 +69,9 @@ export default {
     AutoCompleteText,
     InitialAppointment,
     HistoricalAppointments,
-    MedicalRecord
+    MedicalRecord,
+    Exams,
+    Recipes
   
   },
   data() {
@@ -103,6 +105,32 @@ export default {
       this.stopwatch = setInterval(() => {
           this.time++;
         }, 1000);
+    },
+    finishAppointment(){
+      this.appointmentStarted = false
+      this.time= 0
+      this.stopwatch = null
+      this.createAppointment();
+    },
+    navigateAppointment(menu){
+      this.selectedOption = menu;
+    },
+    async createAppointment(){
+      const doctorid = userService.getDoctorId();
+      const patientId = this.$route.query.patientId;
+
+      const record = {
+        patientId: patientId,
+        doctorId: doctorid,
+        medicalRecord: {...this.$store.state.record.record}
+      }
+      console.log(record)
+      const response = await recordService.createRecord(record);
+      console.log(response)
+      console.log(this.$store.state.appointment.appointment)
+    },
+    teste(){
+      console.log(this.$store.state.record)
     }
   },
 };
@@ -123,6 +151,10 @@ export default {
   .header-appointment-content{
     width: 100%;
     display: flex;
+  }
+
+  .view-content{
+    margin-bottom: 2rem;
   }
 
   .header-button {

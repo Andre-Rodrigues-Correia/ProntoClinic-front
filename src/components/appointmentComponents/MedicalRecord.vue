@@ -2,49 +2,49 @@
 
     <div class="medical-medical-content">
         <div>
-            <form @submit.prevent="submitForm">
+            <form @submit.prevent="submitForm('exams')">
                 <div>
                 <label for="complaint">Reclamação:</label>
-                <textarea id="complaint" v-model="medicalRecord.complaint"></textarea>
+                <textarea class="textarea-content" id="complaint" v-model="record.anamnese.complaint"></textarea>
                 </div>
 
                 
 
                 <div>
                 <label for="historyPresentIllness">História do problema atual:</label>
-                <textarea id="historyPresentIllness" v-model="medicalRecord.historyPresentIllness"></textarea>
+                <textarea class="textarea-content" id="historyPresentIllness" v-model="record.anamnese.historyPresentIllness"></textarea>
                 </div>
 
                 <div>
                 <label for="historyPreviousIllness">História de problema anterior</label>
-                <textarea id="historyPreviousIllness" v-model="medicalRecord.historyPreviousIllness"></textarea>
+                <textarea class="textarea-content" id="historyPreviousIllness" v-model="record.anamnese.historyPreviousIllness"></textarea>
                 </div>
 
                 <div>
                 <label for="previousMedications">Medicamentos anteriores:</label>
-                <textarea id="previousMedications" v-model="medicalRecord.previousMedications"></textarea>
+                <textarea class="textarea-content" id="previousMedications" v-model="record.anamnese.previousMedications"></textarea>
                 </div>
 
                 <div>
                 <label for="allergies">Alergias:</label>
-                <textarea id="allergies" v-model="medicalRecord.allergies"></textarea>
+                <textarea class="textarea-content" id="allergies" v-model="record.anamnese.allergies"></textarea>
                 </div>
 
                 <div>
                 <label for="observations">Observações:</label>
-                <textarea id="observations" v-model="medicalRecord.observations"></textarea>
+                <textarea class="textarea-content" id="observations" v-model="record.anamnese.observations"></textarea>
                 </div>
-
-              
-                
+  
                 <div>
                     <label for="othersInformations">Outras informações:</label>
-                    <textarea id="othersInformations" v-model="medicalRecord.othersInformations"></textarea>
+                    <textarea class="textarea-content" id="othersInformations" v-model="record.anamnese.othersInformations"></textarea>
                 </div>
                 
 
 
-                <button type="submit">Submit</button>
+                
+                <button class="create-button" @click="previous('historic')">Voltar</button>
+                <button class="create-button" type="submit">Avaçar</button>
             </form>
         </div>
     </div>
@@ -62,7 +62,8 @@ export default {
     },
     data() {
         return {
-            medicalRecord: {
+            record: {
+                anamnese: {
                 complaint: '',
                 historyPresentIllness: '',
                 historyPreviousIllness: '',
@@ -70,8 +71,13 @@ export default {
                 allergies: '',
                 observations: '',
                 othersInformations: ''
-            },
-            teste: '',
+                },
+                prescriptions: {
+                    exams: [],
+                    medicines: [],
+                    otherPrescriptions: ''
+                }
+            }
         }
     },
     created (){
@@ -79,14 +85,21 @@ export default {
     },
     methods: {
         async getData(){
-
+            this.record.anamnese.complaint = this.$store.state.record.record?.anamnese?.complaint  || '';
+            this.record.anamnese.historyPresentIllness = this.$store.state.record.record?.anamnese?.historyPresentIllness  || '';
+            this.record.anamnese.historyPreviousIllness = this.$store.state.record.record?.anamnese?.historyPreviousIllness  || '';
+            this.record.anamnese.previousMedications = this.$store.state.record.record?.anamnese?.previousMedications  || '';
+            this.record.anamnese.allergies = this.$store.state.record.record?.anamnese?.allergies  || '';
+            this.record.anamnese.observations = this.$store.state.record.record?.anamnese?.observations  || '';
+            this.record.anamnese.othersInformations = this.$store.state.record.record?.anamnese?.othersInformations  || '';
         },
-        submitForm() {
-            console.log(this.medicalRecord.othersInformations)
-            this.$emit('form-submitted', this.medicalRecord);
-            console.log(this.medicalRecord)
-
+        async submitForm(destiny) {
+            await this.$store.dispatch('record/setRecord', this.record);
+            this.$emit('sendMenu', destiny)
         },
+        previous(destiny){
+            this.$emit('sendMenu', destiny)
+        }
     }
 }
 
@@ -108,7 +121,7 @@ export default {
         padding: 2rem;
     }
 
-    textarea {
+    .textarea-content {
         width: 100%;
         height: 5vw; /* Ajuste a altura conforme necessário, usando vw para uma relação com a largura da tela */
         padding: 0.5rem;

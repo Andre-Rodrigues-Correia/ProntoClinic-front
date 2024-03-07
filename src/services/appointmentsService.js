@@ -24,6 +24,22 @@ const appointmentService = {
   },
 
 
+  createAppointment: async (appointment) => {
+    try {
+      const token = userService.getToken()
+      const config = {
+        headers: {
+            Authorization: token,
+          },
+      }
+      const response = await axios.post(BASE_URL, appointment, config);
+      return response.data.message;
+    } catch (error) {
+      console.error('Erro ao recuperar o usuário:', error);
+      throw error;
+    }
+  },
+
 
 };
 
