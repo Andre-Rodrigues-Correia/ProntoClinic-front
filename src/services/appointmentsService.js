@@ -16,6 +16,7 @@ const appointmentService = {
           },
       }
       const response = await axios.get(`${BASE_URL}/patient/${patientId}`, config);
+      console.log(response)
       return response.data.message;
     } catch (error) {
       console.error('Erro ao recuperar o usuário:', error);

@@ -130,7 +130,12 @@ export default {
       const response = await recordService.createRecord(record);
       console.log(response)
       console.log(this.$store.state.appointment.appointment)
+      this.resetStates();
     },
+    async resetStates(){
+      await this.$store.dispatch('appointment/cancelAppointment');
+      await this.$store.dispatch('record/cancelRecord');
+    }
   },
 };
 </script>

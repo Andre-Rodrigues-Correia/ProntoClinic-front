@@ -2,11 +2,26 @@
     <div>
       <h1>
         Tela inicial do atendimetno, quem sabe um resumo com ia do paciente ?
+        Ajustar a rota no back para retornar os nomes certos nome do peciente e do medico ao invés do ID
       </h1>
+      
+      <div>
+        <h2>Lista de Atendimentos</h2>
+        <ul>
+          <li v-for="appointment in appointments" :key="appointment._id.$oid">
+            <strong>Médico:</strong> {{ appointment.doctorId.$oid }}<br>
+            <strong>paciente:</strong> {{ appointment.patientId.$oid }}<br>
+            <hr>
+          </li>
+        </ul>
+      </div>
+
     </div>
   </template>
   
   <script>
+import appointmentService from '@/services/appointmentsService';
+import recordService from '@/services/recordService';
 import userService from '@/services/userService';
 
   export default {
@@ -29,7 +44,9 @@ import userService from '@/services/userService';
         },
         methods: {
             async getData(){
-              this.patientId = this.$route.query.patientId;  
+              this.patientId = this.$route.query.patientId;
+              this.appointments = await recordService.getRecordsForPatient(this.patientId)
+              console.log(this.appointments)
               this.verifyClinicAndDoctorIds();
               this.createAppointment();
             },
