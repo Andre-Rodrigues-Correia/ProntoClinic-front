@@ -41,6 +41,8 @@
       </div>
 
       <div v-if="selectedOption === 'finish'">
+
+        <ResumeAppointment />
       
         <button @click="navigateAppointment('recipes')">Voltar</button>
         <button @click="finishAppointment">Finalizar atendimetno</button>
@@ -60,6 +62,7 @@ import MedicalRecord from '@/components/appointmentComponents/MedicalRecord.vue'
 import Exams from '@/components/appointmentComponents/Exams.vue';
 import Recipes from '@/components/appointmentComponents/Recipes.vue';
 import recordService from '@/services/recordService';
+import ResumeAppointment from '@/components/appointmentComponents/ResumeAppointment.vue'
 import userService from '@/services/userService';
 
 
@@ -71,7 +74,8 @@ export default {
     HistoricalAppointments,
     MedicalRecord,
     Exams,
-    Recipes
+    Recipes,
+    ResumeAppointment
   
   },
   data() {
@@ -79,7 +83,7 @@ export default {
       selectedOption: 'initial',
       appointmentStarted: false,
       time: 0,
-      stopwatch: null
+      stopwatch: null,
     }
   },
   computed: {
@@ -94,7 +98,6 @@ export default {
   },
   methods: {
     async getData(){
-        
     },
     selectOption(option){
       this.selectedOption = option;
@@ -124,14 +127,10 @@ export default {
         doctorId: doctorid,
         medicalRecord: {...this.$store.state.record.record}
       }
-      console.log(record)
       const response = await recordService.createRecord(record);
       console.log(response)
       console.log(this.$store.state.appointment.appointment)
     },
-    teste(){
-      console.log(this.$store.state.record)
-    }
   },
 };
 </script>

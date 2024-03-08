@@ -106,7 +106,7 @@ export default {
 
 </script>
 
-<style>
+<style scoped>
     .medical-medical-content {
         width: 100%;
         border: solid 2px;

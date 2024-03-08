@@ -52,9 +52,8 @@
     },
     created() {
       this.getData();
-      if (this.record?.prescriptions?.exams > 0) {
-        this.items = [...this.record.prescriptions.exams];
-      }
+        this.items = [...this.record.prescriptions.exams] || [];
+      
     },
     methods: {
       getData() {
