@@ -1,232 +1,138 @@
 <template>
-    <div class="exams-content">
-      <table>
-        <thead>
-          <tr>
-            <th>Exame</th>
-            <th>Variações (min - max)</th>
-            <th>Valor</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(item, index) in items" :key="index">
+  <div>
+    <table>
+      <thead>
+        <tr>
+          <th>Exame</th>
+          <th>Variações (min/max)</th>
+          <th v-for="exam in patientExams" :key="exam.date">{{ formatDate(exam.date) }}</th>
+          <th>{{ currentDate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <template v-if="examsList.length > 0">
+          <tr v-for="(exam, index) in examsList" :key="index">
             <td>
-              <select v-model="item.exame" @change="updateVariations(item)">
-                <option v-for="exam in exams" :key="exam.name" :value="exam.name">{{ exam.name }}</option>
-                <option value="custom">Outro (customizado)</option>
+              <select v-model="exam.name">
+                <option v-for="e in exams" :key="e.name" :value="e.name">{{ e.name }}</option>
               </select>
-              <input v-if="item.exame === 'custom'" v-model="item.customExame" type="text" placeholder="Nome do exame customizado" />
             </td>
             <td>
-              <input v-if="(item.exame === 'custom' || exams.find(exam => exam.name === item.exame))" v-model="item.variations.min" type="number" placeholder="Mínimo" />
-              -
-              <input v-if="(item.exame === 'custom' || exams.find(exam => exam.name === item.exame))" v-model="item.variations.max" type="number" placeholder="Máximo" />
-              <span v-else>{{ item.variations.min }} - {{ item.variations.max }}</span>
+              <input v-model="examsList[index].variation.min" type="number" />
+              <input v-model="examsList[index].variation.max" type="number" />
+            </td>
+            <td v-for="patientExam in patientExams" :key="patientExam.date">
+              <span v-if="patientExam.name === exam.name">{{ patientExam.value }}</span>
             </td>
             <td>
-              <input v-model="item.value" type="text" :class="{ 'invalid-input': item.value !== '' && !isValueValid(item) }" />
-            </td>
-            <td>
-              <button @click="removeItem(index)">Remover</button>
+              <input
+                type="text"
+                v-model="examResults[index].value"
+                :style="{ background: isValueOutOfRange(examResults[index]) ? 'red' : 'none' }"
+              />
+              <button @click="saveExamResult(exam, examResults[index].value)">Salvar</button>
+              <button @click="deleteExamRow(index)">Excluir</button>
             </td>
           </tr>
-        </tbody>
-      </table>
-      <button @click="addItem">Adicionar Linha</button>
-      <button @click="saveData('recipes')" :disabled="!isDataValid">Salvar</button>
-    </div>
-  </template>
-  
-  <script>
-  export default {
-    data() {
-      return {
-        record: null,
-        exams: [
-          { name: 'Exame A', min: 10, max: 20 },
-          { name: 'Exame B', min: 5, max: 15 },
-        ],
-        items: [],
-      };
-    },
-    created() {
-      this.getData();
-        this.items = [...this.record.prescriptions.exams] || [];
-      
-    },
-    methods: {
-      getData() {
-        this.record = { ...this.$store.state.record.record };
-      },
-      addItem() {
-        this.items.push({
-          exame: '',
-          customExame: '',
-          variations: { min: null, max: null },
-          value: '',
-        });
-      },
-      removeItem(index) {
-        this.items.splice(index, 1);
-      },
-      updateVariations(item) {
-        if (item.exame !== 'custom' && this.exams.find(exam => exam.name === item.exame)) {
-          const selectedExam = this.exams.find(exam => exam.name === item.exame);
-          item.variations.min = selectedExam.min;
-          item.variations.max = selectedExam.max;
-        } else {
-          item.variations.min = null;
-          item.variations.max = null;
-        }
-      },
-      async saveData(destiny) {
-        this.record.prescriptions.exams = this.items;
-        await this.$store.dispatch('record/updateRecord', { ...this.record });
-  
-        this.$emit('sendMenu', destiny);
-      },
-      isValueValid(item) {
-        const min = item.variations.min;
-        const max = item.variations.max;
-        const value = parseFloat(item.value);
-  
-        if (min !== null && max !== null && !isNaN(value)) {
-          return value >= min && value <= max;
-        }
-  
-        return false;
-      },
-    },
-    computed: {
-      isDataValid() {
-        return this.items.every(item => {
-          if (item.exame !== 'custom') {
-            return item.exame && item.variations.min !== null && item.variations.max !== null && item.value !== '';
-          } else {
-            return item.customExame && item.variations.min !== null && item.variations.max !== null && item.value !== '';
-          }
-        });
-      },
-    },
-  };
-  </script>
-  
-  <style scoped>
-  .exams-content {
-    width: 100%;
-    margin-bottom: 2rem;
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 15px;
-    font-family: 'Arial', sans-serif;
-  }
-  
-  th,
-  td {
-    border: 1px solid #ddd;
-    padding: 12px;
-    text-align: left;
-  }
-  
-  th {
-    background-color: #4caf50;
-    color: white;
-  }
-  
-  td select,
-  td input {
-    width: 100%;
-    padding: 8px;
-    box-sizing: border-box;
-    margin: 4px 0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  td select {
-    height: 38px;
-  }
-  
-  td input[type='number'] {
-    width: 60px;
-  }
-  
-  button {
-    background-color: #4caf50;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  button:disabled {
-    background-color: #a0a0a0;
-    cursor: not-allowed;
-  }
-  
-  .invalid-input {
-    background-color: red;
-  }
-  </style>
-  
-  
+        </template>
+        <template v-else>
+          <tr>
+            <td colspan="4">Nenhum exame adicionado.</td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+    <button @click="addExamRow">Adicionar Exame</button>
+    <button @click="addCustomExam">Adicionar Exame Customizável</button>
+    <button @click="showAllExams">Exibir Todos os Exames do Paciente</button>
+  </div>
+</template>
 
-  
-
-
-
-<!-- export default {
-    name: 'Exams',
-    data() {
+<script>
+export default {
+  data() {
+    return {
+      exams: [
+        { name: 'Exame A', variation: { min: 10, max: 20 } },
+        { name: 'Exame B', variation: { min: 10, max: 20 } },
+        { name: 'Exame C', variation: { min: 10, max: 20 } },
+      ],
+      patientExams: [
+        { name: 'Exame A', variation: { min: 1, max: 99 }, value: 88, date: '2024-03-07T20:03:59.478+00:00' },
+        { name: 'Exame A', variation: { min: 1, max: 99 }, value: 88, date: '2024-03-06T20:03:59.478+00:00' },
+      ],
+      currentDate: new Date().toLocaleDateString(),
+      examsList: [],
+      examResults: [],
+    };
+  },
+  methods: {
+    formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString();
+    },
+    isValueOutOfRange(examResult) {
+      return examResult.value < examResult.variation.min || examResult.value > examResult.variation.max;
+    },
+    saveExamResult(exam, value) {
+      const date = new Date().toISOString();
+      this.patientExams.push({ name: exam.name, variation: exam.variation, value, date });
+    },
+    addExamRow() {
+      this.examsList.push({ name: this.exams[0].name, variation: { min: this.exams[0].variation.min, max: this.exams[0].variation.max } });
+      this.examResults.push({ name: this.exams[0].name, variation: { min: this.exams[0].variation.min, max: this.exams[0].variation.max }, value: 0 });
+    },
+    addCustomExam() {
+      const customExam = { name: prompt('Nome do Exame:'), variation: { min: 0, max: 0 } };
+      if (customExam.name) {
+        this.exams.push(customExam);
+        this.examsList.push(customExam);
+        this.examResults.push({ name: customExam.name, variation: customExam.variation, value: 0 });
+      }
+    },
+    showAllExams() {
+      alert(JSON.stringify(this.patientExams, null, 2));
+    },
+    deleteExamRow(index) {
+      this.examsList.splice(index, 1);
+      this.examResults.splice(index, 1);
+    },
+  },
+  created() {
+  // Verifica se há exames em patientExams e inicializa examsList com esses exames
+  if (this.patientExams.length > 0) {
+    const uniqueExamNames = new Set();  // Utilizando um Set para armazenar nomes únicos
+    this.examsList = this.patientExams.map((exam) => {
+      // Verifica se o nome já está presente na lista antes de adicioná-lo
+      if (!uniqueExamNames.has(exam.name)) {
+        uniqueExamNames.add(exam.name);
         return {
-            record: null,
-            rows: [{
-                exame: 'exame1',
-                variacaoMin: 0,
-                variacaoMax: 100,
-                unidadeMedida: 'metros',
-                valor: ''
-            }]
-        }
-    },
-    created(){
-        this.getData()
-    },
-    methods: {
-        getData(){
-            this.record = { ...this.$store.state.record.record };
-        },
-        async sendData(destiny){
-           
-            this.record.prescriptions.exams.push({
-                name: 'exam 01',
-                variation: {
-                    min: 1,
-                    max: 99
-                },
-                value: 88
-            });
+          name: exam.name,
+          variation: { min: exam.variation.min, max: exam.variation.max },
+        };
+      }
+      return null; // Retorna null se o nome já estiver presente para ser filtrado posteriormente
+    }).filter(Boolean);
 
-            
-            await this.$store.dispatch('record/updateRecord', { ...this.record }); // Cria uma cópia reativa do objeto
-            this.$emit('sendMenu', destiny);
-        },
-        adicionarLinha() {
-            this.rows.push({
-                exame: 'exame1',
-                variacaoMin: 0,
-                variacaoMax: 100,
-                unidadeMedida: 'metros',
-                valor: ''
-            });
-            },
-        removerLinha(index) {
-            this.rows.splice(index, 1);
-        }
-    }
-} -->
+    this.examResults = this.examsList.map((exam) => ({ name: exam.name, variation: exam.variation, value: 0 }));
+  }
+},
+};
+</script>
+
+<style scoped>
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+</style>
