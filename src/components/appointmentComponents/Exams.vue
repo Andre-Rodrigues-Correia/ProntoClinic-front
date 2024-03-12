@@ -11,6 +11,7 @@
           </th>
           <th>Resultado do Dia Atual</th>
           <th>Adicionar Resultado</th>
+          <th>Excluir Exame</th> <!-- Novo cabeçalho -->
         </tr>
       </thead>
       <tbody>
@@ -31,6 +32,9 @@
           </td>
           <td>
             <button @click="adicionarResultadoAtual(exame)">Adicionar</button>
+          </td>
+          <td>
+            <button @click="excluirExame(exame)">Excluir</button> <!-- Novo botão -->
           </td>
         </tr>
         <tr v-if="novaLinhaVisivel">
@@ -54,6 +58,10 @@
           </td>
           <td>
             <button @click="adicionarResultadoAtual(novaLinha)">Adicionar</button>
+          </td>
+          <td>
+            <!-- Botão para excluir a nova linha (novo exame) -->
+            <button @click="excluirNovaLinha">Excluir</button>
           </td>
         </tr>
       </tbody>
@@ -167,6 +175,24 @@ export default {
       if (exameSelecionado) {
         this.novaLinha.min = exameSelecionado.min;
         this.novaLinha.max = exameSelecionado.max;
+      }
+    },
+    excluirNovaLinha() {
+      // Limpar os valores da nova linha para cancelar a adição do novo exame
+      this.novaLinha = {
+        nome: '',
+        min: 0,
+        max: 0,
+        resultadoAtual: '',
+      };
+      // Ocultar a nova linha
+      this.novaLinhaVisivel = false;
+    },
+    excluirExame(exame) {
+      // Excluir o exame do paciente
+      const index = this.paciente.resultadoExames.indexOf(exame);
+      if (index !== -1) {
+        this.paciente.resultadoExames.splice(index, 1);
       }
     },
     atualizarExames() {
