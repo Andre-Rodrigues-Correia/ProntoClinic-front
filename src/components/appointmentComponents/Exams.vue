@@ -1,50 +1,65 @@
 <template>
   <div>
-    <table>
+    <button @click="adicionarExame" v-if="paciente.resultadoExames.length === 0">Adicionar Exame</button>
+    <table v-if="paciente.resultadoExames.length > 0">
       <thead>
         <tr>
-          <th>Exame</th>
-          <th>Variações (min/max)</th>
-          <th v-for="exam in patientExams" :key="exam.date">{{ formatDate(exam.date) }}</th>
-          <th>{{ currentDate }}</th>
+          <th>Nome do Exame</th>
+          <th>Variação Min/Max</th>
+          <th v-for="data in datasExames" :key="data">
+            Resultado {{ data }}
+          </th>
+          <th>Resultado do Dia Atual</th>
+          <th>Adicionar Resultado</th>
         </tr>
       </thead>
       <tbody>
-        <template v-if="examsList.length > 0">
-          <tr v-for="(exam, index) in examsList" :key="index">
-            <td>
-              <select v-model="exam.name">
-                <option v-for="e in exams" :key="e.name" :value="e.name">{{ e.name }}</option>
-              </select>
-            </td>
-            <td>
-              <input v-model="examsList[index].variation.min" type="number" />
-              <input v-model="examsList[index].variation.max" type="number" />
-            </td>
-            <td v-for="patientExam in patientExams" :key="patientExam.date">
-              <span v-if="patientExam.name === exam.name">{{ patientExam.value }}</span>
-            </td>
-            <td>
-              <input
-                type="text"
-                v-model="examResults[index].value"
-                :style="{ background: isValueOutOfRange(examResults[index]) ? 'red' : 'none' }"
-              />
-              <button @click="saveExamResult(exam, examResults[index].value)">Salvar</button>
-              <button @click="deleteExamRow(index)">Excluir</button>
-            </td>
-          </tr>
-        </template>
-        <template v-else>
-          <tr>
-            <td colspan="4">Nenhum exame adicionado.</td>
-          </tr>
-        </template>
+        <tr v-for="(exame, index) in examesComResultados" :key="index">
+          <td>
+            {{ exame.nome }}
+          </td>
+          <td>
+            <input v-model="exame.min" type="number" />
+            a
+            <input v-model="exame.max" type="number" />
+          </td>
+          <td v-for="data in datasExames" :key="data">
+            {{ obterResultado(exame, data) !== undefined ? obterResultado(exame, data) : 'Não fez esse exame nesse dia' }}
+          </td>
+          <td>
+            <input v-model="exame.resultadoAtual" :style="{ backgroundColor: verificarIntervalo(exame) ? 'red' : '' }" />
+          </td>
+          <td>
+            <button @click="adicionarResultadoAtual(exame)">Adicionar</button>
+          </td>
+        </tr>
+        <tr v-if="novaLinhaVisivel">
+          <td>
+            <select v-model="novaLinha.nome" @change="atualizarMinEMax">
+              <option v-for="exameDisponivel in examesDisponiveis" :key="exameDisponivel.nome" :value="exameDisponivel.nome">
+                {{ exameDisponivel.nome }}
+              </option>
+            </select>
+          </td>
+          <td>
+            <input v-model="novaLinha.min" type="number" />
+            a
+            <input v-model="novaLinha.max" type="number" />
+          </td>
+          <td v-for="data in datasExames" :key="data">
+            <!-- Lógica para exibir os resultados do novo exame -->
+          </td>
+          <td>
+            <input v-model="novaLinha.resultadoAtual" :style="{ backgroundColor: verificarIntervalo(novaLinha) ? 'red' : '' }" />
+          </td>
+          <td>
+            <button @click="adicionarResultadoAtual(novaLinha)">Adicionar</button>
+          </td>
+        </tr>
       </tbody>
     </table>
-    <button @click="addExamRow">Adicionar Exame</button>
-    <button @click="addCustomExam">Adicionar Exame Customizável</button>
-    <button @click="showAllExams">Exibir Todos os Exames do Paciente</button>
+    <button @click="adicionarNovaLinha" v-if="examesDisponiveis.length > 0">Adicionar Nova Linha</button>
+    <button @click="atualizarExames">Atualizar e Log</button>
   </div>
 </template>
 
@@ -52,87 +67,130 @@
 export default {
   data() {
     return {
-      exams: [
-        { name: 'Exame A', variation: { min: 10, max: 20 } },
-        { name: 'Exame B', variation: { min: 10, max: 20 } },
-        { name: 'Exame C', variation: { min: 10, max: 20 } },
+      paciente: {
+        resultadoExames: [
+          { nome: 'Exame A', data: '01/02/2021', resultado: 10, min: 50, max: 100 },
+          { nome: 'Exame B', data: '04/03/2022', resultado: 85, min: 10, max: 50 },
+        ],
+      },
+      examesDisponiveis: [
+        {
+          nome: 'Exame A',
+          min: 50,
+          max: 100,
+        },
+        {
+          nome: 'Exame B',
+          min: 10,
+          max: 50,
+        },
+        {
+          nome: 'Exame C',
+          min: 10,
+          max: 50,
+        },
+        // Adicione outros exames conforme necessário
       ],
-      patientExams: [
-        { name: 'Exame A', variation: { min: 1, max: 99 }, value: 88, date: '2024-03-07T20:03:59.478+00:00' },
-        { name: 'Exame A', variation: { min: 1, max: 99 }, value: 88, date: '2024-03-06T20:03:59.478+00:00' },
-      ],
-      currentDate: new Date().toLocaleDateString(),
-      examsList: [],
-      examResults: [],
+      novaLinhaVisivel: false,
+      novaLinha: {
+        nome: '',
+        min: 0,
+        max: 0,
+        resultadoAtual: '',
+      },
     };
   },
-  methods: {
-    formatDate(dateString) {
-      const date = new Date(dateString);
-      return date.toLocaleDateString();
+  computed: {
+    datasExames() {
+      // Obter todas as datas de todos os exames do paciente
+      const datas = new Set();
+      this.paciente.resultadoExames.forEach((resultadoExame) => {
+        datas.add(resultadoExame.data);
+      });
+      return Array.from(datas);
     },
-    isValueOutOfRange(examResult) {
-      return examResult.value < examResult.variation.min || examResult.value > examResult.variation.max;
-    },
-    saveExamResult(exam, value) {
-      const date = new Date().toISOString();
-      this.patientExams.push({ name: exam.name, variation: exam.variation, value, date });
-    },
-    addExamRow() {
-      this.examsList.push({ name: this.exams[0].name, variation: { min: this.exams[0].variation.min, max: this.exams[0].variation.max } });
-      this.examResults.push({ name: this.exams[0].name, variation: { min: this.exams[0].variation.min, max: this.exams[0].variation.max }, value: 0 });
-    },
-    addCustomExam() {
-      const customExam = { name: prompt('Nome do Exame:'), variation: { min: 0, max: 0 } };
-      if (customExam.name) {
-        this.exams.push(customExam);
-        this.examsList.push(customExam);
-        this.examResults.push({ name: customExam.name, variation: customExam.variation, value: 0 });
-      }
-    },
-    showAllExams() {
-      alert(JSON.stringify(this.patientExams, null, 2));
-    },
-    deleteExamRow(index) {
-      this.examsList.splice(index, 1);
-      this.examResults.splice(index, 1);
+    examesComResultados() {
+      // Filtrar os exames disponíveis para exibir apenas os que o paciente possui resultados
+      return this.paciente.resultadoExames;
     },
   },
-  created() {
-  // Verifica se há exames em patientExams e inicializa examsList com esses exames
-  if (this.patientExams.length > 0) {
-    const uniqueExamNames = new Set();  // Utilizando um Set para armazenar nomes únicos
-    this.examsList = this.patientExams.map((exam) => {
-      // Verifica se o nome já está presente na lista antes de adicioná-lo
-      if (!uniqueExamNames.has(exam.name)) {
-        uniqueExamNames.add(exam.name);
-        return {
-          name: exam.name,
-          variation: { min: exam.variation.min, max: exam.variation.max },
-        };
-      }
-      return null; // Retorna null se o nome já estiver presente para ser filtrado posteriormente
-    }).filter(Boolean);
+  methods: {
+    adicionarExame() {
+      // Adicionar um novo exame ao array de exames do paciente
+      this.novaLinhaVisivel = true;
+    },
+    adicionarResultadoAtual(exame) {
+      // Adicionar o resultado atual ao array de resultados do paciente na data atual
+      const dataAtual = new Date().toLocaleDateString();
+      exame.resultadoAtual = parseFloat(exame.resultadoAtual); // Certifique-se de converter para número
+      const resultadoExistente = this.paciente.resultadoExames.find(
+        (resultadoExame) => resultadoExame.nome === exame.nome && resultadoExame.data === dataAtual
+      );
 
-    this.examResults = this.examsList.map((exam) => ({ name: exam.name, variation: exam.variation, value: 0 }));
-  }
-},
+      if (resultadoExistente) {
+        resultadoExistente.resultado = exame.resultadoAtual;
+        resultadoExistente.min = exame.min;
+        resultadoExistente.max = exame.max;
+      } else {
+        this.paciente.resultadoExames.push({
+          nome: exame.nome,
+          data: dataAtual,
+          resultado: exame.resultadoAtual,
+          min: exame.min,
+          max: exame.max,
+        });
+      }
+
+      // Limpar o input do resultado atual
+      exame.resultadoAtual = '';
+    },
+    verificarIntervalo(exame) {
+      // Verificar se o resultado do exame atual está fora do intervalo
+      const resultadoAtual = parseFloat(exame.resultadoAtual);
+      return resultadoAtual < exame.min || resultadoAtual > exame.max;
+    },
+    obterResultado(exame, data) {
+      // Obter o resultado do exame na data especificada
+      const resultado = this.paciente.resultadoExames.find(
+        (resultadoExame) => resultadoExame.nome === exame.nome && resultadoExame.data === data
+      );
+      return resultado ? resultado.resultado : undefined;
+    },
+    adicionarNovaLinha() {
+      // Tornar visível a nova linha para adicionar um exame
+      this.novaLinhaVisivel = true;
+    },
+    atualizarMinEMax() {
+      // Atualizar os valores de min e max na nova linha com base na seleção do exame
+      const exameSelecionado = this.examesDisponiveis.find((exame) => exame.nome === this.novaLinha.nome);
+
+      if (exameSelecionado) {
+        this.novaLinha.min = exameSelecionado.min;
+        this.novaLinha.max = exameSelecionado.max;
+      }
+    },
+    atualizarExames() {
+      console.log('Exames Atualizados:', this.paciente.resultadoExames);
+    },
+  },
 };
 </script>
 
 <style scoped>
+/* Estilos opcionais para personalizar a aparência da tabela, inputs, etc. */
 table {
   width: 100%;
   border-collapse: collapse;
 }
 
 th, td {
-  border: 1px solid #dddddd;
-  text-align: left;
+  border: 1px solid #ddd;
   padding: 8px;
+  text-align: left;
 }
 
-th {
-  background-color: #f2f2f2;
+input, select {
+  width: 100%;
+  box-sizing: border-box;
 }
 </style>
