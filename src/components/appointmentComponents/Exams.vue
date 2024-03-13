@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="container">
 
-    <div>
+    <div class="table-container">
       <table>
         <thead>
           <tr>
@@ -40,9 +40,17 @@
           </tr>
           <tr v-if="addNewExam">
             <td>
-              <select v-model="newExam.name" @change="updateNewExam">
+              <!-- <select v-model="newExam.name" @change="updateNewExam">
                 <option v-for="exam in examsNotInResults" :key="exam.name" :value="exam.name">{{ exam.name }}</option>
-              </select>
+              </select> -->
+              <Multiselect
+                :options="exams"
+                v-model="newExam.name"
+                mode="single"
+                :searchable="true"
+                :close-on-select="true"
+                @select="updateNewExam"
+              />
             </td>
             <td>
               <input v-model="newExam.min" type="number" class="input-number" />
@@ -88,12 +96,16 @@
           
         </tbody>
       </table>
-      <button @click="addExam">Adicionar Exame</button>
-      <button @click="addCustomExam">Adicionar Exame Customizado</button>
+      <div class="buttons">
+        <button @click="addExam" class="action-button">Adicionar Exame</button>
+        <button @click="addCustomExam" class="action-button">Adicionar Exame Customizado</button>
+      </div>
+      
     </div>
 
-    <div>
-      <button @click="sendData">Enviar</button>
+    <div class="menu-buttons">
+      <button class="create-button" @click="previous('historic')">Voltar</button>
+      <button class="create-button" @click="sendData">Avaçar</button>
     </div>
 
 
@@ -104,6 +116,8 @@
 
 <script>
   import Multiselect from '@vueform/multiselect'
+  import "@vueform/multiselect/themes/default.css";
+
 
 export default {
   components: {
@@ -220,6 +234,7 @@ export default {
     updateNewExam(){
       const selectedExam = this.exams.find((exam) => exam.name == this.newExam.name);
 
+
       if (selectedExam) {
         this.newExam.min = selectedExam.min;
         this.newExam.max = selectedExam.max;
@@ -254,13 +269,36 @@ export default {
 };
 </script>
 
-<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 
 
+<!-- <style scoped src="@coreui/coreui/dist/css/coreui.min.css"></style> -->
 <style scoped>
 .container {
-  max-width: 800px;
-  margin: 0 auto;
+  width: 100%;
+  margin-bottom: 2rem;
+
+}
+
+.table-container{
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  padding: 2rem;
+  margin: auto;
+
+}
+
+.menu-buttons{
+  text-align: center;
+}
+
+td{
+  width: 100%;
+}
+
+
+button{
+  margin: 0.2rem;
 }
 
 .action-button {
@@ -331,9 +369,7 @@ li{
  background-color: #d32f2f;
 }
 
-
-
-::v-deep ul{
+/* ::v-deep ul{
   display: flex;
   flex-direction: column;
   list-style: none;
@@ -350,6 +386,6 @@ li{
   list-style: none;
   background-color: blue;
   padding: 0.1rem;
-}
+} */
 
 </style>
