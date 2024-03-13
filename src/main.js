@@ -9,6 +9,7 @@ import { faEye, faTrash, faEdit, faUser } from '@fortawesome/free-solid-svg-icon
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import store from './store';
 import '@fortawesome/fontawesome-svg-core/styles.css'
+import Multiselect from 'vue-multiselect'
 
 library.add(faEye, faTrash, faEdit, faUser)
 
@@ -24,6 +25,7 @@ const axiosInstance = axios.create({
 app.config.globalProperties.$axios = axiosInstance;
 
 app.component('font-awesome-icon', FontAwesomeIcon)
+app.component('multiselect', Multiselect)
 
 app.use(store)
 app.use(router)
