@@ -10,7 +10,7 @@
             <th v-for="date in examsDates" :key="date">
             Resultado {{ date }}
             </th>
-            <th>{{ currentDate }}</th>
+            <th><input type="date" v-model="examDate"></th>
             <th>Adicionar Resultado</th>
             <th>Excluir Exame</th>
           </tr>
@@ -117,6 +117,7 @@ export default {
         { name: 'Exame B', results: [{ result: 50, date: '04/03/2022'}], min: 10, max: 50 },
       ],
       },
+      examDate: this.getCurrentDate(),
       newExam: {
         name: '',
         date: '',
@@ -183,7 +184,7 @@ export default {
       const existingExamIndex = this.patient.examsResults.findIndex(e => e.name === exam.name);
       const newResult = {
         result: exam.newResult,
-        date: this.getCurrentDate()
+        date: this.examDate,
         }
         console.log(exam)
         if (existingExamIndex !== -1) {
