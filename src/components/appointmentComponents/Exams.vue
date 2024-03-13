@@ -112,12 +112,13 @@ export default {
   data() {
     return {
       patient: {
-        examsResults: [
-        { name: 'Exame A', results: [{ result: 10, date: '01/02/2021'}], min: 50, max: 100 },
-        { name: 'Exame B', results: [{ result: 50, date: '04/03/2022'}], min: 10, max: 50 },
-      ],
+        examsResults: [],
+        // { name: 'Exame A', results: [{ result: 10, date: '01-02-2021'}], min: 50, max: 100 },
+        // { name: 'Exame B', results: [{ result: 50, date: '04-03-2022'}], min: 10, max: 50 },
       },
-      examDate: this.getCurrentDate(),
+      record: {
+        exams: [],
+      },
       newExam: {
         name: '',
         date: '',
@@ -126,9 +127,9 @@ export default {
         max: '',
         results: []
       },
+      examDate: this.getCurrentDate(),
       addNewExam: false,
       customExam: false,
-      newResult: '',
       currentDate: this.getCurrentDate(),
       exams: [
         { name: 'Exame A', min: 50, max: 100, label: 'Exame A', value: 'Exame A' },
@@ -136,10 +137,14 @@ export default {
         { name: 'Exame C', min: null, max: null, label: 'Exame C', value: 'Exame C' },
         // Adicione outros exames conforme necessário
       ],
+
+      /////////////////////////////////////////////
+      item: []
     };
   },
   created(){
     this.currentDate = this.getCurrentDate();
+    this.getData();
   },
   computed: {
     examsDates() {
@@ -157,24 +162,21 @@ export default {
     },
     examsNotInResults() {
     return this.exams.filter((exam) => {
-      // Verifica se o nome do exame não está presente nos examsResults do paciente
       return !this.patient.examsResults.some((result) => result.name === exam.name);
     });
   },
   },
   methods: {
+    getData(){
+      this.record = this.$store.state.record.record
+      this.patient.examsResults = [...this.record.prescriptions.exams] || []
+    },
     getCurrentDate() {
       const now = new Date();
       const day = now.getDate().toString().padStart(2, '0');
       const month = (now.getMonth() + 1).toString().padStart(2, '0');
       const year = now.getFullYear();
-      return `${day}/${month}/${year}`;
-    },
-    getResults(exam, date) {
-      const result = this.patient.examsResults.find(
-        (examResult) => examResult.name === exame.name && examResult.date === date
-      );
-      return resultado ? resultado.resultado : undefined;
+      return `${day}-${month}-${year}`;
     },
     verifyRange(exam){
       const result = parseFloat(exam.newResult);
@@ -186,9 +188,8 @@ export default {
         result: exam.newResult,
         date: this.examDate,
         }
-        console.log(exam)
-        if (existingExamIndex !== -1) {
-          
+
+        if (existingExamIndex !== -1) {  
           this.patient.examsResults[existingExamIndex].results.push(newResult);
         } else {
           this.patient.examsResults.push({
@@ -219,7 +220,6 @@ export default {
     updateNewExam(){
       const selectedExam = this.exams.find((exam) => exam.name == this.newExam.name);
 
-  
       if (selectedExam) {
         this.newExam.min = selectedExam.min;
         this.newExam.max = selectedExam.max;
@@ -243,8 +243,11 @@ export default {
     }
     return 'Não fez esse exame nesse dia';
   },
-  sendData(){
-    console.log(this.patient)
+  async sendData(){
+    this.record.prescriptions.exams = [...this.patient.examsResults]
+    await this.$store.dispatch('record/setRecord', this.record);
+    console.log(this.record)
+    this.$emit('sendMenu', 'recipes')
   }
 
   },
