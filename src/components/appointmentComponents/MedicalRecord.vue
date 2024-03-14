@@ -3,45 +3,97 @@
     <div class="medical-medical-content">
         <div>
             <form class="form-content" @submit.prevent="submitForm('exams')">
-                <div>
+                <div class="content-label-input">
+
+
+                <ViewDataPatient title="Reclamações anteriores" field="complaint"/>
+                
                 <label class="label-content" for="complaint">Reclamação:</label>
-                <textarea class="textarea-content" id="complaint" v-model="record.anamnese.complaint"></textarea>
+                <CustomTextArea
+                        class="textarea-content"
+                        :suggestions="suggestions"
+                        :defaultValue="record.anamnese.complaint"
+                        v-model="record.anamnese.complaint"
+                        @setValue="(data)=> {
+                            record.anamnese.complaint = data
+                        }"/>
                 </div>
 
-                
+                <hr>
 
                 <div>
                 <label class="label-content" for="historyPresentIllness">História do problema atual:</label>
-                <textarea class="textarea-content" id="historyPresentIllness" v-model="record.anamnese.historyPresentIllness"></textarea>
+                <CustomTextArea
+                        class="textarea-content"
+                        :suggestions="suggestions"
+                        :defaultValue="record.anamnese.historyPresentIllness"
+                        v-model="record.anamnese.historyPresentIllness"
+                        @setValue="(data)=> {
+                            record.anamnese.historyPresentIllness = data
+                        }"/>
                 </div>
 
                 <div>
                 <label class="label-content" for="historyPreviousIllness">História de problema anterior</label>
-                <textarea class="textarea-content" id="historyPreviousIllness" v-model="record.anamnese.historyPreviousIllness"></textarea>
+                <CustomTextArea
+                        class="textarea-content"
+                        :suggestions="suggestions"
+                        :defaultValue="record.anamnese.historyPreviousIllness"
+                        v-model="record.anamnese.historyPreviousIllness"
+                        @setValue="(data)=> {
+                            record.anamnese.historyPreviousIllness = data
+                        }"/>
                 </div>
 
                 <div>
                 <label class="label-content" for="previousMedications">Medicamentos anteriores:</label>
-                <textarea class="textarea-content" id="previousMedications" v-model="record.anamnese.previousMedications"></textarea>
+                <CustomTextArea
+                        class="textarea-content"
+                        :suggestions="suggestions"
+                        :defaultValue="record.anamnese.previousMedications"
+                        v-model="record.anamnese.previousMedications"
+                        @setValue="(data)=> {
+                            record.anamnese.previousMedications = data
+                        }"/>
                 </div>
 
                 <div>
                 <label class="label-content" for="allergies">Alergias:</label>
-                <textarea class="textarea-content" id="allergies" v-model="record.anamnese.allergies"></textarea>
+                <CustomTextArea
+                        class="textarea-content"
+                        :suggestions="suggestions"
+                        :defaultValue="record.anamnese.allergies"
+                        v-model="record.anamnese.allergies"
+                        @setValue="(data)=> {
+                            record.anamnese.allergies = data
+                        }"/>
                 </div>
 
                 <div>
                 <label class="label-content" for="observations">Observações:</label>
-                <textarea class="textarea-content" id="observations" v-model="record.anamnese.observations"></textarea>
+                <CustomTextArea
+                        class="textarea-content"
+                        :suggestions="suggestions"
+                        :defaultValue="record.anamnese.observations"
+                        v-model="record.anamnese.observations"
+                        @setValue="(data)=> {
+                            record.anamnese.observations = data
+                        }"/>
                 </div>
   
                 <div>
                     <label class="label-content" for="othersInformations">Outras informações:</label>
-                    <textarea class="textarea-content" id="othersInformations" v-model="record.anamnese.othersInformations"></textarea>
+                    <CustomTextArea
+                        class="textarea-content"
+                        :suggestions="suggestions"
+                        :defaultValue="record.anamnese.othersInformations"
+                        v-model="record.anamnese.othersInformations"
+                        @setValue="(data)=> {
+                            record.anamnese.othersInformations = data
+                        }"/>
                 </div>
-                
 
-
+        
                 
                 <button class="create-button" @click="previous('historic')">Voltar</button>
                 <button class="create-button" type="submit">Avaçar</button>
@@ -55,10 +107,12 @@
 
 <script>
 import CustomTextArea from '../generic/CustomTextArea.vue';
+import ViewDataPatient from './ViewDataPatient.vue';
 export default {
     danme: 'MedicalRecord',
     components: {
-        CustomTextArea
+        CustomTextArea,
+        ViewDataPatient
     },
     data() {
         return {
@@ -77,7 +131,14 @@ export default {
                     medicines: [],
                     otherPrescriptions: ''
                 }
-            }
+            },
+            teste: '',
+            suggestions: [
+        { name: 'Flamengo', data: 'Flamengo é um time grande' },
+        { name: 'Vasco', data: 'Vasco é um time carioca' },
+        { name: 'Corinthians', data: 'Corinthians é um time paulista' },
+        // Adicione mais sugestões conforme necessário
+      ],
         }
     },
     created (){
@@ -131,5 +192,12 @@ export default {
     .label-content {
         display: flex;
         width: 100%;
+    }
+
+    .content-label-input{
+        margin-bottom: 2rem;
+    }
+    hr{
+        margin-bottom: 0.5rem;
     }
 </style>

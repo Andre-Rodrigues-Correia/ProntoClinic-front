@@ -115,7 +115,8 @@
 </template>
 
 <script>
-  import Multiselect from '@vueform/multiselect'
+  import examService from '@/services/examService';
+import Multiselect from '@vueform/multiselect'
   import "@vueform/multiselect/themes/default.css";
 
 
@@ -181,9 +182,11 @@ export default {
   },
   },
   methods: {
-    getData(){
+    async getData(){
       this.record = this.$store.state.record.record
       this.patient.examsResults = [...this.record.prescriptions.exams] || []
+      this.exams = await examService.getAllExams();
+      console.log(this.exams)
     },
     getCurrentDate() {
       const now = new Date();

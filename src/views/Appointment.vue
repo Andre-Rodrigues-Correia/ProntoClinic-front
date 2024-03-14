@@ -64,6 +64,7 @@ import Recipes from '@/components/appointmentComponents/Recipes.vue';
 import recordService from '@/services/recordService';
 import ResumeAppointment from '@/components/appointmentComponents/ResumeAppointment.vue'
 import userService from '@/services/userService';
+import appointmentService from '@/services/appointmentsService';
 
 
 export default {
@@ -127,9 +128,22 @@ export default {
         doctorId: doctorid,
         medicalRecord: {...this.$store.state.record.record}
       }
+
+      console.log(record)
       const response = await recordService.createRecord(record);
       console.log(response)
-      console.log(this.$store.state.appointment.appointment)
+
+      
+      const appo = {
+        record: record.medicalRecord,
+        ...this.$store.state.appointment.appointment
+      }
+      
+      
+      console.log(appo)
+      const response2 = await appointmentService.createAppointment(appo)
+      
+      console.log(response2)
       this.resetStates();
     },
     async resetStates(){

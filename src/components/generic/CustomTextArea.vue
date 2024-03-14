@@ -1,82 +1,101 @@
-<!-- AutoCompleteInput.vue -->
-
 <template>
-  <div>
-    <input
-      :value="inputValue"
-      @input="handleInput"
-      @focus="displaySuggestions"
-      @blur="hideSuggestions"
-    />
-    <ul v-show="suggestionsVisible" class="suggestions">
-      <li v-for="suggestion in filteredSuggestions" :key="suggestion" @click="selectSuggestion(suggestion)">
-        {{ suggestion }}
-      </li>
-    </ul>
+  <div class="custom-text-area">
+    <div class="input-container">
+      <input type="text" v-model="inputValue" @input="handleInput" @keydown.tab.prevent="completeWithTab" />
+      <div class="suggestions" v-if="showSuggestions">
+        <div v-for="suggestion in filteredSuggestions" :key="suggestion.name" class="suggestion" @click="selectSuggestion(suggestion)" @keydown.tab.prevent="completeWithTab">
+          {{ suggestion.name }}
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
+  name: 'CustomTextArea',
   props: {
-    value: String
+    suggestions: {
+      type: Array,
+      required: true
+    },
+    defaultValue: {
+      type: String,
+    },
   },
   data() {
     return {
-      inputValue: this.value || '',
-      suggestions: ['Flamengo', 'Fluminense', 'Palmeiras', 'Santos', 'São Paulo'],
-      suggestionsVisible: false
+      inputValue: this.defaultValue,
+      showSuggestions: false
     };
   },
   computed: {
     filteredSuggestions() {
-      return this.suggestions.filter(suggestion =>
-        suggestion.toLowerCase().includes((this.inputValue || '').toLowerCase())
-      );
+      return this.suggestions.filter(suggestion => suggestion.name.toLowerCase().includes(this.inputValue.toLowerCase()));
     }
   },
   watch: {
-    value(newVal) {
-      this.inputValue = newVal;
-    },
-    inputValue() {
-      this.$emit('input', this.inputValue);
+    value(newValue) {
+      this.inputValue = newValue;
     }
   },
   methods: {
     handleInput() {
-      this.suggestionsVisible = (this.inputValue || '').length > 3;
-    },
-    displaySuggestions() {
-      this.suggestionsVisible = true;
-    },
-    hideSuggestions() {
-      this.suggestionsVisible = false;
+      this.showSuggestions = this.inputValue.length >= 4;
+      this.$emit('setValue', this.inputValue);
     },
     selectSuggestion(suggestion) {
-      this.inputValue = suggestion;
-      this.suggestionsVisible = false;
+      this.inputValue = suggestion.data;
+      this.showSuggestions = false;
+      this.$emit('setValue', suggestion.data);
+    },
+    completeWithTab() {
+      if (this.filteredSuggestions.length > 0) {
+        this.inputValue = this.filteredSuggestions[0].data;
+        this.showSuggestions = false;
+        this.$emit('setValue', this.inputValue);
+      }
     }
   }
 };
 </script>
 
 <style scoped>
-.suggestions {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
+.custom-text-area {
+  width: 100%;
+}
+
+.input-container {
+  width: 100%;
+}
+
+input {
+  width: 100%;
+  height: 5vw;
+  padding: 10px;
   border: 1px solid #ccc;
-  border-top: none;
+  border-radius: 5px;
+  box-sizing: border-box; /* Para garantir que o padding não afete a largura total */
 }
 
-.suggestions li {
-  padding: 8px;
+.suggestions {
+  left: 0;
+  z-index: 1;
+  width: 100%;
+  max-height: 150px;
+  overflow-y: auto;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.suggestion {
+  padding: 10px;
   cursor: pointer;
-  background-color: #f1f1f1;
 }
 
-.suggestions li:hover {
-  background-color: #ddd;
+.suggestion:hover {
+  background-color: #f0f0f0;
 }
 </style>

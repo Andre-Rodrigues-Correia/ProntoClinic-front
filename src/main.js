@@ -8,6 +8,7 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { faEye, faTrash, faEdit, faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import store from './store';
+import PrimeVue from 'primevue/config';
 import '@fortawesome/fontawesome-svg-core/styles.css'
 import Multiselect from 'vue-multiselect'
 
@@ -29,6 +30,7 @@ app.component('multiselect', Multiselect)
 
 app.use(store)
 app.use(router)
+app.use(PrimeVue);
 
 
 app.mount('#app')
