@@ -47,7 +47,7 @@ import userService from '@/services/userService';
           await this.$store.dispatch('clinic/setClinic', payloadToken.clinicId);
           this.clinic = this.$store.state.clinic.clinic;
           
-          this.$router.push({ name: 'home' });
+          this.$router.push({ name: 'home', params: {clinicId: this.clinic, doctorId: this.doctor._id} });
         } catch (error) {
           console.error('Erro ao fazer login:', error);
           // Tratar erros de login, exibir mensagem ao usuário, etc.

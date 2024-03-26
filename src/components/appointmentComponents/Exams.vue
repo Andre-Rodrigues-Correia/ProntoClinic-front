@@ -66,7 +66,7 @@
               <button @click="addResult(newExam)" class="action-button">Adicionar</button>
             </td>
             <td>
-              <button @click="deleteExam(newExam)" class="action-button delete-button">Excluir</button>
+              <button @click="deleteNotNewExam(newExam)" class="action-button delete-button">Excluir</button>
             </td>
           </tr>
 
@@ -89,7 +89,7 @@
               <button @click="addResult(newExam)" class="action-button">Adicionar</button>
             </td>
             <td>
-              <button @click="deleteExam(newExam)" class="action-button delete-button">Excluir</button>
+              <button @click="deleteNotCustomNewExam(newExam)" class="action-button delete-button">Excluir</button>
             </td>
           </tr>
 
@@ -104,7 +104,7 @@
     </div>
 
     <div class="menu-buttons">
-      <button class="create-button" @click="previous('historic')">Voltar</button>
+      <button class="create-button" @click="previous('record')">Voltar</button>
       <button class="create-button" @click="sendData">Avaçar</button>
     </div>
 
@@ -115,9 +115,9 @@
 </template>
 
 <script>
-  import examService from '@/services/examService';
+import examService from '@/services/examService';
 import Multiselect from '@vueform/multiselect'
-  import "@vueform/multiselect/themes/default.css";
+import "@vueform/multiselect/themes/default.css";
 
 
 export default {
@@ -252,6 +252,13 @@ export default {
       }
     },
 
+    deleteNotCustomNewExam(){
+      this.customExam = false;
+    },
+    deleteNotNewExam(){
+      this.addNewExam = false;
+    },
+
     getExamResult(date, exam) {
     for (const e of this.patient.examsResults) {
       const result = exam.results.find((result) => result.date === date && exam.name == e.name);
@@ -260,6 +267,9 @@ export default {
       }
     }
     return 'Não fez esse exame nesse dia';
+  },
+  previous(destiny){
+      this.$emit('sendMenu', destiny)
   },
   async sendData(){
     this.record.prescriptions.exams = [...this.patient.examsResults]

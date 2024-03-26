@@ -22,12 +22,15 @@
   
           <!-- Exames -->
           <div class="sub-section">
-      <h4>Exames</h4>
-      <ul>
-        <li v-for="exam in appointment.prescriptions.exams" :key="exam._id" :class="{ 'out-of-range': isOutOfRange(exam) }">
-          {{ exam.exame }} - {{ exam.value }}
-        </li>
-      </ul>
+            <h4>Exames</h4>
+            <ul>
+              <li v-for="exam in appointment.prescriptions.exams" :key="exam._id" :class="{ 'out-of-range': isOutOfRange(exam) }">
+                {{ exam.name }} - Resultado: 
+                <span v-for="(result, index) in exam.results" :key="index">
+                  {{ result.date }}: {{ result.result }}{{ index !== exam.results.length - 1 ? ', ' : '' }}
+                </span>
+              </li>
+            </ul>
     </div>
   
           <!-- Medicamentos -->
@@ -114,9 +117,10 @@
         });
         },
         isOutOfRange(exam) {
+          console.log(exam)
             const value = parseFloat(exam.value);
-            const min = parseFloat(exam.variations.min);
-            const max = parseFloat(exam.variations.max);
+            const min = parseFloat(exam.min);
+            const max = parseFloat(exam.max);
             return isNaN(value) || value < min || value > max;
         },
 

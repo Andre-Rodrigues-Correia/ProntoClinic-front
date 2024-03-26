@@ -5,8 +5,9 @@
             <form class="form-content" @submit.prevent="submitForm('exams')">
                 <div class="content-label-input">
 
+                    <ViewDataPatient title="Reclamações anteriores" field="complaint"/>
 
-                <ViewDataPatient title="Reclamações anteriores" field="complaint"/>
+                
                 
                 <label class="label-content" for="complaint">Reclamação:</label>
                 <CustomTextArea
@@ -21,8 +22,14 @@
 
                 <hr>
 
-                <div>
+                <div  class="content-label-input">
+                
+                <ViewDataPatient title="Histórias do problema atual" field="historyPresentIllness"/>
+
                 <label class="label-content" for="historyPresentIllness">História do problema atual:</label>
+
+                
+
                 <CustomTextArea
                         class="textarea-content"
                         :suggestions="suggestions"
@@ -33,8 +40,13 @@
                         }"/>
                 </div>
 
-                <div>
+                <hr>
+
+                <div  class="content-label-input">
+
+                <ViewDataPatient title="Histórias de problemas passados" field="historyPreviousIllness"/>
                 <label class="label-content" for="historyPreviousIllness">História de problema anterior</label>
+
                 <CustomTextArea
                         class="textarea-content"
                         :suggestions="suggestions"
@@ -45,8 +57,13 @@
                         }"/>
                 </div>
 
-                <div>
+                <hr>
+
+                <div class="content-label-input">
+
+                <ViewDataPatient title="Medicamentos anteriores" field="previousMedications"/>
                 <label class="label-content" for="previousMedications">Medicamentos anteriores:</label>
+
                 <CustomTextArea
                         class="textarea-content"
                         :suggestions="suggestions"
@@ -57,8 +74,13 @@
                         }"/>
                 </div>
 
-                <div>
+                <hr>
+
+                <div class="content-label-input">
+
+                <ViewDataPatient title="Alergias anteriores" field="allergies"/>
                 <label class="label-content" for="allergies">Alergias:</label>
+
                 <CustomTextArea
                         class="textarea-content"
                         :suggestions="suggestions"
@@ -69,8 +91,13 @@
                         }"/>
                 </div>
 
-                <div>
+                <hr>
+
+                <div class="content-label-input">
+
+                <ViewDataPatient title="Observações anteriores" field="observations"/>
                 <label class="label-content" for="observations">Observações:</label>
+
                 <CustomTextArea
                         class="textarea-content"
                         :suggestions="suggestions"
@@ -80,9 +107,14 @@
                             record.anamnese.observations = data
                         }"/>
                 </div>
+
+                <hr>
   
-                <div>
+                <div class="content-label-input">
+
+                    <ViewDataPatient title="Outras informações anteriores" field="othersInformations"/>
                     <label class="label-content" for="othersInformations">Outras informações:</label>
+
                     <CustomTextArea
                         class="textarea-content"
                         :suggestions="suggestions"
@@ -134,7 +166,7 @@ export default {
             },
             teste: '',
             suggestions: [
-        { name: 'Flamengo', data: 'Flamengo é um time grande' },
+        { name: 'precauções', data: 'O peciente deve ter as precauções X, Y e Z para se recuperar da cirúgia e etx...' },
         { name: 'Vasco', data: 'Vasco é um time carioca' },
         { name: 'Corinthians', data: 'Corinthians é um time paulista' },
         // Adicione mais sugestões conforme necessário
@@ -197,6 +229,7 @@ export default {
     .content-label-input{
         margin-bottom: 2rem;
     }
+
     hr{
         margin-bottom: 0.5rem;
     }

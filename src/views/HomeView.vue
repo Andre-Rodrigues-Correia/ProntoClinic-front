@@ -7,9 +7,8 @@
       </ul>
     </div>
     <div class="inside-container">
-      <div v-if="selectedOption === 'patients'">
-        
-        <Patients/>
+      <div v-if="selectedOption === 'patients'"> 
+        <Patients :clinicId="this.$route.params.clinicId" :doctorId="this.$route.params.doctorId"/>
       </div>
 
       <div v-if="selectedOption === 'createPatient'">
@@ -28,9 +27,12 @@
       CreatePatient,
       Patients
     },
+    created (){
+      console.log(this.$route.params.clinicId)
+    },
     data() {
       return {
-        selectedOption: 'patients'
+        selectedOption: 'patients',
       };
     },
     methods: {

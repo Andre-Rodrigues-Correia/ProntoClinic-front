@@ -11,10 +11,11 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
+      path: '/:clinicId/:doctorId',
       name: 'home',
       component: HomeView,
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true },
+      props: true
     },
     {
       path: '/pacientes',
@@ -23,10 +24,11 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
-      path: '/atendimentos',
-      name: 'atendimentos',
+      path: '/:clinicId/:doctorId/atendimento/:appointmentId',
+      name: 'atendimento',
       component: Appointment,
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true },
+      props: true
     },
     {
       path: '/signup',

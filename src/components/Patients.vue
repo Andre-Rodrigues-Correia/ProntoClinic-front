@@ -47,6 +47,16 @@ export default {
       PatientDetailsModal,
       EditPatientModal
     },
+    props: {
+      clinicId: {
+        type: String,
+        required: true,
+      },
+      doctorId: {
+        type: String,
+        required: true,
+      }
+    },
     data () {
         return {
             patients: [],
@@ -87,7 +97,9 @@ export default {
         this.patients = this.$store.state.patients.patients;
       },
       appointment(patient){
-        this.$router.push({ name: 'atendimentos', query: { patientId: patient._id } });
+        //criar o appointment e passar o id
+        console.log(this.$route.params.clinicId);
+        this.$router.push({ name: 'atendimento', params: { clinicId: this.clinicId, doctorId: this.doctorId, appointmentId: 'sdfsdfsdff' } });
       }
     }
 }
@@ -144,4 +156,3 @@ export default {
   }
 
 </style>
-  ./PatientDetailsModal.vue
