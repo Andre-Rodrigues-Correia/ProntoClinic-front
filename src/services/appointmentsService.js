@@ -40,6 +40,22 @@ const appointmentService = {
     }
   },
 
+  updateAppointment: async  (appointment) => {
+    try {
+      const token = userService.getToken()
+      const config = {
+        headers: {
+            Authorization: token,
+          },
+      }
+      const response = await axios.put(`${BASE_URL}/${appointment._id}`, appointment, config);
+      return response.data.message;
+    } catch (error) {
+      console.error('Erro ao atualizar o atendimento:', error);
+      throw error;
+    }
+  }
+
 
 };
 

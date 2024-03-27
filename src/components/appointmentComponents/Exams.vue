@@ -134,6 +134,7 @@ export default {
       record: {
         exams: [],
       },
+      patientExams: [],
       newExam: {
         name: '',
         date: '',

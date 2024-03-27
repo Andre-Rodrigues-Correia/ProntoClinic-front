@@ -29,14 +29,26 @@ import userService from '@/services/userService';
         components: {
         
         },
+
+        props: {
+          clinicId: {
+            type: String,
+            required: true,
+          },
+          doctorId: {
+            type: String,
+            required: true,
+          },
+          appointmentId: {
+            type: String,
+            required: true,
+          }
+        },
         data () {
             return {
                 appointments: [],
                 existsAppoiments: false,
                 showModal: false,
-                patientId: null,
-                doctorId: null,
-                clinicId: null,
             } 
         },
         created (){
@@ -44,31 +56,8 @@ import userService from '@/services/userService';
         },
         methods: {
             async getData(){
-              this.patientId = this.$route.query.patientId;
-              this.appointments = await recordService.getRecordsForPatient(this.patientId)
-              console.log(this.appointments)
-              this.verifyClinicAndDoctorIds();
-              this.createAppointment();
+              this.appointments = await recordService.getRecordsForPatient(this.$store.state.appointment.appointment.patientId)
             },
-            async createAppointment(){
-              console.log(this.doctorId)
-              const appointment ={
-                patientId: this.patientId,
-                doctorId: this.doctorId,
-                clinicId: this.clinicId,
-                status: 'started',
-                local: this.clinicId,
-                date: new Date()
-              }
-              await this.$store.dispatch('appointment/setAppointment', appointment);
-            },
-            verifyClinicAndDoctorIds(){
-                this.setClinicAndDoctorIds();
-            },
-            setClinicAndDoctorIds(){
-              this.doctorId = userService.getDoctorId();
-              this.clinicId = userService.getClinicId();
-            }
         }
     }
   </script>

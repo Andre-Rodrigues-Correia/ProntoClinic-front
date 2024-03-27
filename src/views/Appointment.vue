@@ -21,11 +21,11 @@
 
     <div class="appointment-content">
       <div v-if="selectedOption === 'initial'">
-        <InitialAppointment />
+        <InitialAppointment :clinicId="clinicId" :doctorId="doctorId" :appointmentId="appointmentId"/>
       </div>
 
       <div v-if="selectedOption === 'historic'">
-        <HistoricalAppointments  @sendMenu="navigateAppointment"/>
+        <HistoricalAppointments :clinicId="clinicId" :doctorId="doctorId" :appointmentId="appointmentId"  @sendMenu="navigateAppointment"/>
       </div>
 
       <div class="medical-record" v-if="selectedOption === 'record'">
@@ -85,6 +85,10 @@ export default {
       appointmentStarted: false,
       time: 0,
       stopwatch: null,
+      doctorId: this.$route.params.doctorId,
+      clinicId: this.$route.params.clinicId,
+      appointmentId: this.$route.params.appointmentId,
+      patientId: this.$store.state.appointment.appointment.patientId
     }
   },
   computed: {
@@ -99,6 +103,7 @@ export default {
   },
   methods: {
     async getData(){
+      console.log(this.$route.params)
     },
     selectOption(option){
       this.selectedOption = option;
@@ -114,34 +119,24 @@ export default {
       this.appointmentStarted = false
       this.time= 0
       this.stopwatch = null
-      this.createAppointment();
+      this.updateAppointment();
     },
     navigateAppointment(menu){
       this.selectedOption = menu;
     },
-    async createAppointment(){
-      const doctorid = userService.getDoctorId();
-      const patientId = this.$route.query.patientId;
-
+    async updateAppointment(){
+      console.log(this.$route.params)
       const record = {
-        patientId: patientId,
-        doctorId: doctorid,
+        patientId: this.patientId,
+        doctorId: this.doctorid,
         medicalRecord: {...this.$store.state.record.record}
       }
-
-      console.log(record)
-      const response = await recordService.createRecord(record);
-      console.log(response)
-
       
-      const appo = {
+      const appointment = {
         record: record.medicalRecord,
         ...this.$store.state.appointment.appointment
       }
-      
-      
-      console.log(appo)
-      const response2 = await appointmentService.createAppointment(appo)
+      const response2 = await appointmentService.updateAppointment(appointment)
       
       console.log(response2)
       this.resetStates();

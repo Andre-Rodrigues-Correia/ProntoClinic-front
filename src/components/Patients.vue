@@ -37,7 +37,7 @@
 import patientService from '@/services/patientService';
 import PatientDetailsModal from './PatientDetailsModal.vue';
 import EditPatientModal from './EditPatient.vue'
-
+import appointmentService from '@/services/appointmentsService';
 
 
 
@@ -96,10 +96,26 @@ export default {
         await this.$store.dispatch('patients/deletePatient', patient._id);
         this.patients = this.$store.state.patients.patients;
       },
-      appointment(patient){
-        //criar o appointment e passar o id
-        console.log(this.$route.params.clinicId);
-        this.$router.push({ name: 'atendimento', params: { clinicId: this.clinicId, doctorId: this.doctorId, appointmentId: 'sdfsdfsdff' } });
+      async createAppointment(patientId){
+              const appointment ={
+                patientId: patientId,
+                doctorId: this.doctorId,
+                clinicId: this.clinicId,
+                record: {},
+                status: 'started',
+                local: this.clinicId,
+                date: new Date()
+              }
+
+              const response = await appointmentService.createAppointment(appointment)
+              
+              return response;
+
+      },
+      async appointment(patient){
+        const appointment = await this.createAppointment(patient._id);
+        await this.$store.dispatch('appointment/setAppointment', appointment);
+        this.$router.push({ name: 'atendimento', params: { clinicId: this.clinicId, doctorId: this.doctorId, appointmentId: appointment._id } });
       }
     }
 }

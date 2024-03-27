@@ -51,7 +51,7 @@ import appointmentService from '@/services/appointmentsService';
         },
         methods: {
             async getData(){
-              this.patientId = this.$route.query.patientId;
+              this.patientId = this.$store.state.appointment.appointment.patientId;;
               //this.appointments = appointmentService.getAppointmentsForPatient(this.patientId);
               console.log(this.$store.state.record.record)
               this.existsAppoiments = true,

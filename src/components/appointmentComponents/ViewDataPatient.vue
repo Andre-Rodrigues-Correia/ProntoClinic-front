@@ -60,12 +60,14 @@
              }
          },
          created(){
-             this.getData()
+             this.getData();
          },
          methods: {
              async getData(){
-                 const patientId = this.$route.query.patientId;
-                 this.patientAppointments = await appointmentService.getAppointmentsForPatient(patientId)
+                 const patientId = this.$store.state.appointment.appointment.patientId;
+                 const appointments = await appointmentService.getAppointmentsForPatient(patientId)
+                 const removeActual = this.removeActualAppointment(appointments);
+                 this.patientAppointments = removeActual;
                  console.log(this.patientAppointments)
              },
              formatDate(dateString) {
@@ -82,6 +84,11 @@
              },
              toggleExpanded() {
                  this.expanded = !this.expanded;
+             },
+             removeActualAppointment(appointments){
+                const filterAppointments = appointments.filter(appointment => appointment.hasOwnProperty('record'))
+                console.log(filterAppointments)
+                return filterAppointments
              }
              
          }

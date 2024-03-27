@@ -83,7 +83,7 @@
     },
     methods: {
       async getData(){
-          const patientId = this.$route.query.patientId;
+          const patientId = this.$store.state.appointment.appointment.patientId;
           await this.$store.dispatch('patient/setPatient', patientId);
           this.patient = this.$store.state.patient.patient;
           this.patient.cards = this.patient.cards  || [];
