@@ -16,7 +16,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-if="patient.examsResults.length > 0" v-for="(exam, index) in examsWithResults" :key="index">
+          <tr v-if="patientExams.length > 0" v-for="(exam, index) in examsWithResults" :key="index">
             <td>
               <span>{{ exam.name }}</span>
             </td>
@@ -126,14 +126,15 @@ export default {
   },
   data() {
     return {
-      patient: {
-        examsResults: [],
+      //patient: {
+        //examsResults: [],
         // { name: 'Exame A', results: [{ result: 10, date: '01-02-2021'}], min: 50, max: 100 },
         // { name: 'Exame B', results: [{ result: 50, date: '04-03-2022'}], min: 10, max: 50 },
-      },
+      //},
       record: {
         exams: [],
       },
+      patient: {},
       patientExams: [],
       newExam: {
         name: '',
@@ -165,7 +166,7 @@ export default {
   computed: {
     examsDates() {
       const dates = new Set();
-      this.patient.examsResults.forEach((exam) => {
+      this.patientExams.forEach((exam) => {
         exam.results.forEach((result) => {
           dates.add(result.date);
         });
@@ -174,20 +175,19 @@ export default {
       return dates;
     },
     examsWithResults() {
-      return this.patient.examsResults;
+      return this.patientExams;
     },
     examsNotInResults() {
     return this.exams.filter((exam) => {
-      return !this.patient.examsResults.some((result) => result.name === exam.name);
+      return !this.patientExams.some((result) => result.name === exam.name);
     });
   },
   },
   methods: {
     async getData(){
-      this.record = this.$store.state.record.record
-      this.patient.examsResults = [...this.record.prescriptions.exams] || []
+      await this.getPatientExams();
+      this.patientExams = this.$store.state.exam.exam || []
       this.exams = await examService.getAllExams();
-      console.log(this.exams)
     },
     getCurrentDate() {
       const now = new Date();
@@ -201,16 +201,16 @@ export default {
       return result < exam.min || result > exam.max;
     },
     addResult(exam){
-      const existingExamIndex = this.patient.examsResults.findIndex(e => e.name === exam.name);
+      const existingExamIndex = this.patientExams.findIndex(e => e.name === exam.name);
       const newResult = {
         result: exam.newResult,
         date: this.examDate,
-        }
+      }
 
         if (existingExamIndex !== -1) {  
-          this.patient.examsResults[existingExamIndex].results.push(newResult);
+          this.patientExams[existingExamIndex].results.push(newResult);
         } else {
-          this.patient.examsResults.push({
+          this.patientExams.push({
             name: this.newExam.name,
             min: this.newExam.min,
             max: this.newExam.max,
@@ -246,10 +246,10 @@ export default {
       }
     },
     deleteExam(exam){
-      const index = this.patient.examsResults.findIndex(e => e.name === exam.name);
+      const index = this.patientExams.findIndex(e => e.name === exam.name);
       if (index !== -1) {
-        console.log(this.patient.examsResults)
-        this.patient.examsResults.splice(index, 1);
+        console.log(this.patientExams)
+        this.patientExams.splice(index, 1);
       }
     },
 
@@ -261,23 +261,31 @@ export default {
     },
 
     getExamResult(date, exam) {
-    for (const e of this.patient.examsResults) {
+    for (const e of this.patientExams) {
       const result = exam.results.find((result) => result.date === date && exam.name == e.name);
       if (result) {
         return result.result;
       }
     }
     return 'Não fez esse exame nesse dia';
-  },
-  previous(destiny){
-      this.$emit('sendMenu', destiny)
-  },
-  async sendData(){
-    this.record.prescriptions.exams = [...this.patient.examsResults]
-    await this.$store.dispatch('record/setRecord', this.record);
-    console.log(this.record)
-    this.$emit('sendMenu', 'recipes')
-  }
+    },
+    async getPatientExams(){
+      this.patient = this.$store.state.patient.patient
+      await this.$store.dispatch('exam/setExam', this.patient.exams);
+    },
+    previous(destiny){
+        this.$emit('sendMenu', destiny)
+    },
+    async sendData(){
+      //await this.$store.dispatch('exam/setExam', this.patientExams);
+
+      const editedPatient = {
+        ...this.patient,
+        exams: [...this.patientExams]
+      };
+      await this.$store.dispatch('patients/updatePatient', editedPatient);
+      this.$emit('sendMenu', 'recipes')
+    }
 
   },
 };

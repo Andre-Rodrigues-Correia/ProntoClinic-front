@@ -81,14 +81,59 @@
             medicines: [],
             otherPrescriptions: ""
           }
-        }
+        },
+        resumeAppointment: {},
+        medicalRecord: {},
+        patient: {},
+        exams: [],
+        recipes: [],
       };
     },
     methods: {
       getData() {
         console.log(this.$store.state.record.record);
         this.appointment = this.$store.state.record.record;
+        console.log(this.appointment)
+        this.getAllInformationsAppointment()
       },
+      async getAllInformationsAppointment(){
+        this.patient = this.$store.state?.patient?.patient;
+        this.exams = this.$store.state?.exam?.exam;
+        this.recipes = this.$store.state?.recipe?.recipe;
+
+
+        this.medicalRecord = this.$store.state.record.record;
+
+
+        this.resumeAppointment = {
+          anamnese: {
+            complaint: '',
+          }
+        }
+
+        console.log(this.patient)
+        console.log(this.exams)
+        console.log(this.recipes)
+      },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      /////export pdf
       exportToPDF() {
         const element = document.getElementById('pdf-content');
         const opt = {

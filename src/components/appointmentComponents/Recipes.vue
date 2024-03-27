@@ -27,8 +27,6 @@
         </ul>
       </div>
   
-      <button @click="saveRecipes" class="save-recipes-btn">Salvar Receitas</button>
-  
       <div class="navigation-buttons">
         <button @click="sendData('exams')" class="back-btn">Voltar</button>
         <button @click="sendData('finish')" class="next-btn">Avançar</button>
@@ -41,6 +39,7 @@
     name: 'Exams',
     data() {
       return {
+        patient: {},
         record: null,
         newRecipe: {
           medicine: '',
@@ -55,18 +54,17 @@
     },
     methods: {
       async getData(){
-        this.record = { ...this.$store.state.record.record };
-        this.recipes = [...this.record.prescriptions.medicines] || [];
+        this.patient = this.$store.state.patient.patient;
+        this.recipes = this.$store.state?.recipe?.recipe || [];
         console.log(this.recipes)
       },
       async sendData(destiny) {
-        console.log(this.record);
-        await this.$store.dispatch('record/updateRecord', this.record);
         this.$emit('sendMenu', destiny);
       },
-      addRecipe() {
+      async addRecipe() {
         if (this.newRecipe.medicine && this.newRecipe.dosage && this.newRecipe.instructions) {
           this.recipes.push({ ...this.newRecipe });
+          await this.$store.dispatch('recipe/updateRecipe', this.recipes);
           this.clearForm();
         } else {
           alert('Por favor, preencha todos os campos da receita.');
@@ -74,12 +72,6 @@
       },
       removeRecipe(index) {
         this.recipes.splice(index, 1);
-      },
-      saveRecipes() {
-        // Chamada para a API para salvar as receitas (Exemplo: axios.post('sua/api/receitas', this.recipes))
-        this.record.prescriptions.medicines = this.recipes;
-        console.log(this.record)
-        console.log('Receitas salvas:', this.recipes);
       },
       clearForm() {
         this.newRecipe = {
