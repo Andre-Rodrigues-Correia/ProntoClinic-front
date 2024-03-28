@@ -149,6 +149,8 @@ export default {
     data() {
         return {
             record: {
+                patientId: this.$store.state.appointment.appointment.patientId,
+                doctorId: this.$route.params.doctorId,
                 anamnese: {
                 complaint: '',
                 historyPresentIllness: '',
@@ -158,12 +160,9 @@ export default {
                 observations: '',
                 othersInformations: ''
                 },
-                prescriptions: {
-                    exams: [],
-                    medicines: [],
-                    otherPrescriptions: ''
-                }
             },
+            doctorId: this.$route.params.doctorId,
+            clinicId: this.$route.params.clinicId,
             teste: '',
             suggestions: [
         { name: 'precauções', data: 'O peciente deve ter as precauções X, Y e Z para se recuperar da cirúgia e etx...' },
@@ -178,6 +177,7 @@ export default {
     },
     methods: {
         async getData(){
+
             this.record.anamnese.complaint = this.$store.state.record.record?.anamnese?.complaint  || '';
             this.record.anamnese.historyPresentIllness = this.$store.state.record.record?.anamnese?.historyPresentIllness  || '';
             this.record.anamnese.historyPreviousIllness = this.$store.state.record.record?.anamnese?.historyPreviousIllness  || '';

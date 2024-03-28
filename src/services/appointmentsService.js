@@ -41,6 +41,7 @@ const appointmentService = {
   },
 
   updateAppointment: async  (appointment) => {
+    console.log(appointment)
     try {
       const token = userService.getToken()
       const config = {

@@ -6,13 +6,13 @@
         <div class="section">
           <h3>Anamnese</h3>
           <div class="info">
-            <p><strong>Queixa:</strong> {{ appointment.anamnese.complaint }}</p>
-            <p><strong>História do Problema Atual:</strong> {{ appointment.anamnese.historyPresentIllness }}</p>
-            <p><strong>História de Problema Anterior:</strong> {{ appointment.anamnese.historyPreviousIllness }}</p>
-            <p><strong>Medicamentos Anteriores:</strong> {{ appointment.anamnese.previousMedications }}</p>
-            <p><strong>Alergias:</strong> {{ appointment.anamnese.allergies }}</p>
-            <p><strong>Observações:</strong> {{ appointment.anamnese.observations }}</p>
-            <p><strong>Outras Informações:</strong> {{ appointment.anamnese.othersInformations }}</p>
+            <p><strong>Queixa:</strong> {{ medicalRecord.anamnese.complaint }}</p>
+            <p><strong>História do Problema Atual:</strong> {{ medicalRecord.anamnese.historyPresentIllness }}</p>
+            <p><strong>História de Problema Anterior:</strong> {{ medicalRecord.anamnese.historyPreviousIllness }}</p>
+            <p><strong>Medicamentos Anteriores:</strong> {{ medicalRecord.anamnese.previousMedications }}</p>
+            <p><strong>Alergias:</strong> {{ medicalRecord.anamnese.allergies }}</p>
+            <p><strong>Observações:</strong> {{ medicalRecord.anamnese.observations }}</p>
+            <p><strong>Outras Informações:</strong> {{ medicalRecord.anamnese.othersInformations }}</p>
           </div>
         </div>
   
@@ -24,7 +24,7 @@
           <div class="sub-section">
             <h4>Exames</h4>
             <ul>
-              <li v-for="exam in appointment.prescriptions.exams" :key="exam._id" :class="{ 'out-of-range': isOutOfRange(exam) }">
+              <li v-for="exam in exams" :key="exam._id" :class="{ 'out-of-range': isOutOfRange(exam) }">
                 {{ exam.name }} - Resultado: 
                 <span v-for="(result, index) in exam.results" :key="index">
                   {{ result.date }}: {{ result.result }}{{ index !== exam.results.length - 1 ? ', ' : '' }}
@@ -37,7 +37,7 @@
           <div class="sub-section">
             <h4>Medicamentos</h4>
             <ul>
-              <li v-for="medicine in appointment.prescriptions.medicines" :key="medicine.medicine">
+              <li v-for="medicine in recipes" :key="medicine.medicine">
                 <div class="medicine-info">
                   <p><strong>Medicamento:</strong> {{ medicine.medicine }}</p>
                   <p><strong>Dosagem:</strong> {{ medicine.dosage }}</p>
@@ -48,7 +48,7 @@
           </div>
   
           <!-- Outras Prescrições -->
-          <p class="info"><strong>Outras Prescrições:</strong> {{ appointment.prescriptions.otherPrescriptions }}</p>
+          <!-- <p class="info"><strong>Outras Prescrições:</strong> {{ appointment.prescriptions.otherPrescriptions }}</p> -->
         </div>
       </div>
       <button @click="exportToPDF">Export to PDF</button>
@@ -56,12 +56,12 @@
   </template>
   
   <script>
-  import html2pdf from 'html2pdf.js';
+  import recordService from '@/services/recordService';
+import html2pdf from 'html2pdf.js';
   
   export default {
     name: 'resumeAppointment',
     created() {
-      console.log(this.$store.state.appointment.appointment);
       this.getData();
     },
     data() {
@@ -91,9 +91,7 @@
     },
     methods: {
       getData() {
-        console.log(this.$store.state.record.record);
-        this.appointment = this.$store.state.record.record;
-        console.log(this.appointment)
+        this.appointment = this.$store.state.appointment.appointment;
         this.getAllInformationsAppointment()
       },
       async getAllInformationsAppointment(){
@@ -103,35 +101,24 @@
 
 
         this.medicalRecord = this.$store.state.record.record;
-
+        const teste = {
+          patientId: this.$store.state.appointment.appointment.patientId,
+          doctorId: this.$store.state.appointment.appointment.doctorId,
+          medicalRecord: {...this.$store.state.record.record}
+        }
+        const newRecord = await recordService.createRecord(teste)
 
         this.resumeAppointment = {
-          anamnese: {
-            complaint: '',
+          ...this.appointment,
+          record: newRecord,
+          exams: this.exams,
+          prescriptions: {
+            recipes: this.recipes
           }
         }
-
-        console.log(this.patient)
-        console.log(this.exams)
-        console.log(this.recipes)
+        console.log(this.resumeAppointment)
+        await this.$store.dispatch('appointment/updateAppointment', this.resumeAppointment);
       },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
       /////export pdf
       exportToPDF() {

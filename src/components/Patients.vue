@@ -97,24 +97,26 @@ export default {
         this.patients = this.$store.state.patients.patients;
       },
       async createAppointment(patientId){
-              const appointment ={
-                patientId: patientId,
-                doctorId: this.doctorId,
-                clinicId: this.clinicId,
-                record: {},
-                status: 'started',
-                local: this.clinicId,
-                date: new Date()
-              }
 
-              const response = await appointmentService.createAppointment(appointment)
+        const appointment ={
+            patientId: patientId,
+            doctorId: this.doctorId,
+            clinicId: this.clinicId,
+            record: {},
+            status: 'started',
+            local: this.clinicId,
+            date: new Date()
+          }
+
+          const response = await appointmentService.createAppointment(appointment)
               
-              return response;
+          return response;
 
       },
       async appointment(patient){
         const appointment = await this.createAppointment(patient._id);
         await this.$store.dispatch('appointment/setAppointment', appointment);
+        console.log(this.$store.state.appointment.appointment)
         this.$router.push({ name: 'atendimento', params: { clinicId: this.clinicId, doctorId: this.doctorId, appointmentId: appointment._id } });
       }
     }

@@ -120,15 +120,16 @@ export default {
       this.time= 0
       this.stopwatch = null
       this.updateAppointment();
+      this.$router.push({ name: 'home'});
     },
     navigateAppointment(menu){
       this.selectedOption = menu;
     },
     async updateAppointment(){
-      console.log(this.$route.params)
+      console.log(this.$store.state.appointment.appointment)
       const record = {
         patientId: this.patientId,
-        doctorId: this.doctorid,
+        doctorId: this.doctorId,
         medicalRecord: {...this.$store.state.record.record}
       }
       
@@ -136,14 +137,16 @@ export default {
         record: record.medicalRecord,
         ...this.$store.state.appointment.appointment
       }
-      const response2 = await appointmentService.updateAppointment(appointment)
+      const response = await appointmentService.updateAppointment(appointment)
       
-      console.log(response2)
+      console.log(response)
       this.resetStates();
     },
     async resetStates(){
       await this.$store.dispatch('appointment/cancelAppointment');
       await this.$store.dispatch('record/cancelRecord');
+      await this.$store.dispatch('exam/cancelExam');
+      await this.$store.dispatch('recipe/cancelRecipe');
     }
   },
 };
