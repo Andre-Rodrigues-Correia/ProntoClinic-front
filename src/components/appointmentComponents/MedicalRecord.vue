@@ -138,6 +138,7 @@
 
 
 <script>
+import record from '@/store/modules/record';
 import CustomTextArea from '../generic/CustomTextArea.vue';
 import ViewDataPatient from './ViewDataPatient.vue';
 export default {
@@ -177,7 +178,7 @@ export default {
     },
     methods: {
         async getData(){
-
+            console.log(this.record)
             this.record.anamnese.complaint = this.$store.state.record.record?.anamnese?.complaint  || '';
             this.record.anamnese.historyPresentIllness = this.$store.state.record.record?.anamnese?.historyPresentIllness  || '';
             this.record.anamnese.historyPreviousIllness = this.$store.state.record.record?.anamnese?.historyPreviousIllness  || '';

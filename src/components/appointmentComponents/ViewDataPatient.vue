@@ -13,10 +13,10 @@
              <div class="anamnese">
                  <div class="anamnese-content">
                     Data: {{ formatDate(appointment.date) }} <br/>
-                     {{ appointment.record.anamnese[field]  || 'Sem dados para esse campo nesta consulta'}}
+                     {{ appointment.record.medicalRecord.anamnese[field]  || 'Sem dados para esse campo nesta consulta'}}
                  </div>
                  <div class="buttons-content">
-                     <button type="button" @click="viewAppointment(appointment.record.anamnese[field])"><font-awesome-icon class="icons" icon="eye" /></button>
+                     <button type="button" @click="viewAppointment(appointment.record.medicalRecord.anamnese[field])"><font-awesome-icon class="icons" icon="eye" /></button>
                  </div>
              </div>
             
