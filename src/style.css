@@ -11,6 +11,7 @@
     --primary-text-color: rgb(0, 0, 0);
     --second-text-color: rgb(255, 255, 255);
     --close_items: #c96060;
+    --green-color: #1dd3b0;
     /* Adicione outras cores conforme necessário */
   }
 
@@ -26,6 +27,20 @@
 .create-button:hover{
     background-color: white;
     color: var(--primary-text-color);
+}
+
+.green-button {
+    background-color: var(--green-color);
+    color: var(--second-text-color);
+    cursor: pointer;
+    border-radius: 5px;
+    width: 20%;
+    padding: 10px;
+}
+
+.green-button:hover {
+    background-color: white;
+    color: var(--secondary-color);
 }
 
 .close-button{

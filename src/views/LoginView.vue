@@ -33,7 +33,9 @@ import userService from '@/services/userService';
           const response = await this.$axios.post('/auth/signin-doctor', {
             mail: this.mail,
             password: this.password,
-          });          
+          });
+          
+          console.log(response)
           
           const token = response.data.token
 

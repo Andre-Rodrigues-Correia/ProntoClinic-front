@@ -5,6 +5,8 @@ import SignupView from '../views/SignupView.vue'
 import ValidateAccountView from '../views/ValidateAccountView.vue'
 import Appointment from '../views/Appointment.vue'
 import '../style.css'
+import UserAccount from '@/views/user/UserAccount.vue'
+import ClinicView from '@/views/ClinicView.vue'
 
 
 const router = createRouter({
@@ -27,6 +29,20 @@ const router = createRouter({
       path: '/:clinicId/:doctorId/atendimento/:appointmentId',
       name: 'atendimento',
       component: Appointment,
+      meta: { requiresAuth: true },
+      props: true
+    },
+    {
+      path: '/:clinicId/:doctorId/minha-conta/',
+      name: 'account',
+      component: UserAccount,
+      meta: { requiresAuth: true },
+      props: true
+    },
+    {
+      path: '/:clinicId/:doctorId/minha-clinica/',
+      name: 'clinic',
+      component: ClinicView,
       meta: { requiresAuth: true },
       props: true
     },

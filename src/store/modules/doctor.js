@@ -27,7 +27,7 @@ const actions = {
   async updateDoctor({ commit }, doctor ) {
     try {
       console.log(doctor)
-      const response = await doctorService.editPatient(doctor);
+      const response = await doctorService.updateDoctor(doctor);
       commit('UPDATE_SELECTEDD_DOCTOR', doctor );
     } catch (error) {
       console.error('Error updating doctor', error);

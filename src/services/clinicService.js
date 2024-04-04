@@ -8,7 +8,7 @@ const BASE_URL = "http://localhost:3000/clinic"
 const clinicService = {
 
 
-  getDoctorById: async (clinicId) => {
+  getClinicId: async (clinicId) => {
     try {
       const token = userService.getToken();
       const config = {
@@ -20,7 +20,7 @@ const clinicService = {
       console.log(clinicId)
       return response.data.message;
     } catch (error) {
-      console.error('Erro ao atualizar o usuário:', error);
+      console.error('Erro ao atualizar o clinica:', error);
       throw error;
     }
   },

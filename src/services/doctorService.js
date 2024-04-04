@@ -25,6 +25,23 @@ const doctorService = {
     }
   },
 
+  updateDoctor: async (doctor) => {
+    try {
+      const token = userService.getToken()
+      const config = {
+        headers: {
+            Authorization: token,
+          },
+      }
+      const response = await axios.put(`${BASE_URL}/${doctor._id}`, doctor, config);
+      console.log(response)
+      return response.data.message;
+    } catch (error) {
+      console.error('Erro ao atualizar o usuário:', error);
+      throw error;
+    }
+  },
+
 };
 
 export default doctorService;

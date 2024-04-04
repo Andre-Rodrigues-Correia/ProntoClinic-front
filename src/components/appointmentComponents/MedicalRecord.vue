@@ -165,12 +165,7 @@ export default {
             doctorId: this.$route.params.doctorId,
             clinicId: this.$route.params.clinicId,
             teste: '',
-            suggestions: [
-        { name: 'precauções', data: 'O peciente deve ter as precauções X, Y e Z para se recuperar da cirúgia e etx...' },
-        { name: 'Vasco', data: 'Vasco é um time carioca' },
-        { name: 'Corinthians', data: 'Corinthians é um time paulista' },
-        // Adicione mais sugestões conforme necessário
-      ],
+            suggestions: [],
         }
     },
     created (){
@@ -178,7 +173,6 @@ export default {
     },
     methods: {
         async getData(){
-            console.log(this.record)
             this.record.anamnese.complaint = this.$store.state.record.record?.anamnese?.complaint  || '';
             this.record.anamnese.historyPresentIllness = this.$store.state.record.record?.anamnese?.historyPresentIllness  || '';
             this.record.anamnese.historyPreviousIllness = this.$store.state.record.record?.anamnese?.historyPreviousIllness  || '';
@@ -186,6 +180,8 @@ export default {
             this.record.anamnese.allergies = this.$store.state.record.record?.anamnese?.allergies  || '';
             this.record.anamnese.observations = this.$store.state.record.record?.anamnese?.observations  || '';
             this.record.anamnese.othersInformations = this.$store.state.record.record?.anamnese?.othersInformations  || '';
+
+            this.suggestions = this.$store.state.doctor.doctor?.suggestions || [];
         },
         async submitForm(destiny) {
             await this.$store.dispatch('record/setRecord', this.record);

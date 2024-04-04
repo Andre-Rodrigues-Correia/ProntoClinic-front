@@ -9,8 +9,10 @@
             <nav>
                 <RouterLink class="header-button" to="/pacientes">PACIENTES</RouterLink>
                 <RouterLink class="header-button" to="/atendimentos">ATENDIMENTOS</RouterLink>
-                <button class="header-button" @click="logout">SAIR</button>
-            
+                <!-- <button class="header-button" @click="logout">SAIR</button> -->
+                <button class="header-button" @click="toggleUserMenu"><font-awesome-icon :icon="['fas', 'user']" /></button>
+                
+                <UserMenu v-if="userMenuOpen" @close="closeUserMenu"/>
             </nav>
         </header>
     </div>
@@ -18,13 +20,28 @@
 
 <script>
 import { RouterLink } from 'vue-router';
+import UserMenu from '@/components/user/UserMenu.vue'
 
 export default {
     name: 'Header',
+    components: {
+        UserMenu
+    },
+    data(){
+        return {
+            userMenuOpen: false,
+        }
+    },
     methods: {
         logout(){
             localStorage.removeItem('token');
             this.$router.push('/login'); 
+        },
+        toggleUserMenu() {
+            this.userMenuOpen = !this.userMenuOpen;
+        },
+        closeUserMenu() {
+            this.userMenuOpen = false;
         }
     }
 }
