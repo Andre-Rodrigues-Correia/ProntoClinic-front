@@ -21,11 +21,11 @@
 
     <div class="appointment-content">
       <div v-if="selectedOption === 'initial'">
-        <InitialAppointment :clinicId="clinicId" :doctorId="doctorId" :appointmentId="appointmentId"/>
+        <InitialAppointment :clinicId="clinicId" :userId="userId" :appointmentId="appointmentId"/>
       </div>
 
       <div v-if="selectedOption === 'historic'">
-        <HistoricalAppointments :clinicId="clinicId" :doctorId="doctorId" :appointmentId="appointmentId"  @sendMenu="navigateAppointment"/>
+        <HistoricalAppointments :clinicId="clinicId" :userId="userId" :appointmentId="appointmentId"  @sendMenu="navigateAppointment"/>
       </div>
 
       <div class="medical-record" v-if="selectedOption === 'record'">
@@ -85,7 +85,7 @@ export default {
       appointmentStarted: false,
       time: 0,
       stopwatch: null,
-      doctorId: this.$route.params.doctorId,
+      userId: this.$route.params.userId,
       clinicId: this.$route.params.clinicId,
       appointmentId: this.$route.params.appointmentId,
       patientId: this.$store.state.appointment.appointment.patientId
@@ -129,7 +129,7 @@ export default {
       console.log(this.$store.state.appointment.appointment)
       const record = {
         patientId: this.patientId,
-        doctorId: this.doctorId,
+        doctorId: this.userId,
         medicalRecord: {...this.$store.state.record.record}
       }
       

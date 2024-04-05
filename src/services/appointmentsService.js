@@ -32,6 +32,7 @@ const appointmentService = {
             Authorization: token,
           },
       }
+      console.log(appointment)
       const response = await axios.post(BASE_URL, appointment, config);
       return response.data.message;
     } catch (error) {

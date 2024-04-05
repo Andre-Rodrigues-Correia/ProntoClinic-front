@@ -4,11 +4,11 @@
         <label for="">Nome:</label>
         <p>{{ clinic.name }}</p>
         <label for="">Dono:</label>
-        <p>{{ doctor.name }}</p>
-        <div v-if="clinicDoctors.length > 0">
+        <p>{{ user.name }}</p>
+        <div v-if="clinicUsers.length > 0">
             <h4>Médicos:</h4>
             <ul class="suggestions">
-                <li v-for="(doc, index) in clinicDoctors" :key="index">
+                <li v-for="(doc, index) in clinicUsers" :key="index">
                 {{ doc.name }}
                 </li>
             </ul>
@@ -37,13 +37,13 @@
   
   <script>
   import clinicService from '@/services/clinicService';
-import doctorService from '@/services/doctorService';
+  import userService from '@/services/userService';
   export default {
     data() {
       return {
         clinic: {},
-        doctor: {},
-        clinicDoctors: [],
+        user: {},
+        clinicUsers: [],
         editing: false
       };
     },
@@ -53,22 +53,22 @@ import doctorService from '@/services/doctorService';
     methods: {
       async getData(){
         this.clinic = await clinicService.getClinicId(this.$route.params.clinicId);
-        await this.getDoctors();
-        this.doctor = await doctorService.getDoctorById(this.$route.params.doctorId);
-        console.log(this.doctor)
+        await this.getUsers();
+        this.user = await userService.getUserById(this.$route.params.userId);
+        console.log(this.user)
         console.log(this.$store.state.clinic.clinic)
       },
       edit() {
         this.editing = true;
       },
-      async getDoctors(){
-        const doctors = this.clinic.doctors;
-        doctors.map(async (doc) => {
+      async getUsers(){
+        const users = this.clinic.users;
+        users.map(async (u) => {
             try {
                 console.log(doc)
-                const doctor = await doctorService.getDoctorById(doc);
-                console.log(doctor)
-                this.clinicDoctors.push(doctor)
+                const user = await userService.getUserById(u);
+                console.log(user)
+                this.clinicUsers.push(user)
             } catch (error) {
                 
             }
@@ -77,19 +77,19 @@ import doctorService from '@/services/doctorService';
       async save() {
         // Aqui você pode adicionar a lógica para salvar as informações do médico
         this.editing = false;
-        //await this.$store.dispatch('doctor/updateDoctor', this.doctor);
+        //await this.$store.dispatch('user/updateUser', this.user);
         console.log(this.clinic)
       },
       cancel() {
         // Aqui você pode adicionar a lógica para cancelar a edição e reverter as alterações
-        // this.doctor = { ...this.doctorData };
+        // this.user = { ...this.userData };
         this.editing = false;
       },
     //   addSuggestion() {
-    //     this.doctor.professionals.push({ name: '', data: '' });
+    //     this.user.professionals.push({ name: '', data: '' });
     //   },
     //   removeSuggestion(index) {
-    //     this.doctor.professionals.splice(index, 1);
+    //     this.user.professionals.splice(index, 1);
     //   }
     }
   };

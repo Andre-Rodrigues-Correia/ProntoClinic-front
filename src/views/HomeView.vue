@@ -8,7 +8,7 @@
     </div>
     <div class="inside-container">
       <div v-if="selectedOption === 'patients'"> 
-        <Patients :clinicId="this.$route.params.clinicId" :doctorId="this.$route.params.doctorId"/>
+        <Patients :clinicId="this.$route.params.clinicId" :userId="this.$route.params.userId"/>
       </div>
 
       <div v-if="selectedOption === 'createPatient'">

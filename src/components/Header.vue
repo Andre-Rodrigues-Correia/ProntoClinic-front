@@ -8,7 +8,7 @@
 
             <nav>
                 <RouterLink class="header-button" to="/pacientes">PACIENTES</RouterLink>
-                <RouterLink class="header-button" to="/atendimentos">ATENDIMENTOS</RouterLink>
+                <RouterLink class="header-button" :to="{ name: 'agenda', params: { clinicId: 'this.$route.params.clinicId' , userId: 'this.$route.params.userId '}}">Agenda</RouterLink>
                 <!-- <button class="header-button" @click="logout">SAIR</button> -->
                 <button class="header-button" @click="toggleUserMenu"><font-awesome-icon :icon="['fas', 'user']" /></button>
                 

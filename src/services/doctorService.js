@@ -8,39 +8,39 @@ const BASE_URL = "http://localhost:3000/doctor"
 const doctorService = {
 
 
-  getDoctorById: async (doctorId) => {
-    try {
-      const token = userService.getToken();
-      const config = {
-        headers: {
-            Authorization: token,
-          },
-      }
-      const response = await axios.get(`${BASE_URL}/${doctorId}`, config);
-      console.log(doctorId)
-      return response.data.message;
-    } catch (error) {
-      console.error('Erro ao atualizar o usuário:', error);
-      throw error;
-    }
-  },
+  // getDoctorById: async (doctorId) => {
+  //   try {
+  //     const token = userService.getToken();
+  //     const config = {
+  //       headers: {
+  //           Authorization: token,
+  //         },
+  //     }
+  //     const response = await axios.get(`${BASE_URL}/${doctorId}`, config);
+  //     console.log(doctorId)
+  //     return response.data.message;
+  //   } catch (error) {
+  //     console.error('Erro ao atualizar o usuário:', error);
+  //     throw error;
+  //   }
+  // },
 
-  updateDoctor: async (doctor) => {
-    try {
-      const token = userService.getToken()
-      const config = {
-        headers: {
-            Authorization: token,
-          },
-      }
-      const response = await axios.put(`${BASE_URL}/${doctor._id}`, doctor, config);
-      console.log(response)
-      return response.data.message;
-    } catch (error) {
-      console.error('Erro ao atualizar o usuário:', error);
-      throw error;
-    }
-  },
+  // updateDoctor: async (doctor) => {
+  //   try {
+  //     const token = userService.getToken()
+  //     const config = {
+  //       headers: {
+  //           Authorization: token,
+  //         },
+  //     }
+  //     const response = await axios.put(`${BASE_URL}/${doctor._id}`, doctor, config);
+  //     console.log(response)
+  //     return response.data.message;
+  //   } catch (error) {
+  //     console.error('Erro ao atualizar o usuário:', error);
+  //     throw error;
+  //   }
+  // },
 
 };
 

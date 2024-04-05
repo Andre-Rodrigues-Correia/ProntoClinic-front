@@ -35,7 +35,7 @@ import userService from '@/services/userService';
             type: String,
             required: true,
           },
-          doctorId: {
+          userId: {
             type: String,
             required: true,
           },

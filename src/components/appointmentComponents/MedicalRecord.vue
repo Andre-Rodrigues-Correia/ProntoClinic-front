@@ -151,7 +151,7 @@ export default {
         return {
             record: {
                 patientId: this.$store.state.appointment.appointment.patientId,
-                doctorId: this.$route.params.doctorId,
+                userId: this.$route.params.userId,
                 anamnese: {
                 complaint: '',
                 historyPresentIllness: '',
@@ -162,7 +162,7 @@ export default {
                 othersInformations: ''
                 },
             },
-            doctorId: this.$route.params.doctorId,
+            userId: this.$route.params.userId,
             clinicId: this.$route.params.clinicId,
             teste: '',
             suggestions: [],
@@ -181,7 +181,7 @@ export default {
             this.record.anamnese.observations = this.$store.state.record.record?.anamnese?.observations  || '';
             this.record.anamnese.othersInformations = this.$store.state.record.record?.anamnese?.othersInformations  || '';
 
-            this.suggestions = this.$store.state.doctor.doctor?.suggestions || [];
+            this.suggestions = this.$store.state.user.user?.suggestions || [];
         },
         async submitForm(destiny) {
             await this.$store.dispatch('record/setRecord', this.record);

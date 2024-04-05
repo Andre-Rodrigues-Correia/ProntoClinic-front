@@ -24,7 +24,7 @@ import userService from '@/services/userService';
         mail: '',
         password: '',
         clinic: null,
-        doctor: null
+        user: null
       };
     },
     methods: {
@@ -41,15 +41,20 @@ import userService from '@/services/userService';
 
           localStorage.setItem('token', token);
 
-          const payloadToken = userService.getPayloadToken(token)
+          const payloadToken = userService.getPayloadToken(token);
 
-          await this.$store.dispatch('doctor/setDoctor', payloadToken._id);
-          this.doctor = this.$store.state.doctor.doctor;
+          console.log(payloadToken)
+
+          await this.$store.dispatch('user/setUser', payloadToken._id);
+          this.user = this.$store.state.user.user;
+
+          console.log(this.user)
 
           await this.$store.dispatch('clinic/setClinic', payloadToken.clinicId);
           this.clinic = this.$store.state.clinic.clinic;
+          console.log(this.clinic)
           
-          this.$router.push({ name: 'home', params: {clinicId: this.clinic, doctorId: this.doctor._id} });
+          this.$router.push({ name: 'home', params: {clinicId: this.clinic, userId: this.user._id} });
         } catch (error) {
           console.error('Erro ao fazer login:', error);
           // Tratar erros de login, exibir mensagem ao usuário, etc.

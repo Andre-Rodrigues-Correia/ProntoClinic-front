@@ -4,7 +4,7 @@ import Vuex from 'vuex'
 import patients from './modules/patients'
 import patient from './modules/patient'
 import appointment from './modules/appointment'
-import doctor from './modules/doctor'
+import user from './modules/user'
 import clinic from './modules/clinic'
 import record from './modules/record'
 import exam from './modules/exam'
@@ -15,7 +15,7 @@ export default new Vuex.Store({
     patients,
     patient,
     appointment,
-    doctor,
+    user,
     clinic,
     record,
     exam,

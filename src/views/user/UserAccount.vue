@@ -1,14 +1,14 @@
 <template>
   <div class="user-infos-content">
     <div v-if="!editing">
-      <h2>{{ doctor.name }}</h2>
-      <p>E-mail: {{ doctor.mail }}</p>
-      <p>Data de Nascimento: {{ doctor.birthday }}</p>
-      <p>CPF: {{ doctor.cpf }}</p>
-      <p>Telefone: {{ doctor.phone }}</p>
+      <h2>{{ user.name }}</h2>
+      <p>E-mail: {{ user.mail }}</p>
+      <p>Data de Nascimento: {{ user.birthday }}</p>
+      <p>CPF: {{ user.cpf }}</p>
+      <p>Telefone: {{ user.phone }}</p>
       <h4>Sugestões:</h4>
       <ul class="suggestions">
-        <li v-for="(suggestion, index) in doctor.suggestions" :key="index">
+        <li v-for="(suggestion, index) in user.suggestions" :key="index">
           {{ suggestion.name }} - {{ suggestion.data }}
         </li>
       </ul>
@@ -18,16 +18,16 @@
 
     <div class="edit" v-else>
       <label for="">Nome:</label>
-      <input type="text" v-model="doctor.name" placeholder="Nome">
+      <input type="text" v-model="user.name" placeholder="Nome">
       <label for="">Data de nascimento:</label>
-      <input type="date" v-model="doctor.birthday" placeholder="Data de Nascimento">
+      <input type="date" v-model="user.birthday" placeholder="Data de Nascimento">
       <label for="">CPF:</label>
-      <input type="text" v-model="doctor.cpf" placeholder="CPF">
+      <input type="text" v-model="user.cpf" placeholder="CPF">
       <label for="">Telefone:</label>
-      <input type="text" v-model="doctor.phone" placeholder="Telefone">
+      <input type="text" v-model="user.phone" placeholder="Telefone">
       <div>
         <h3>Sugestões:</h3>
-        <div v-for="(suggestion, index) in doctor.suggestions" :key="index" class="suggestions">
+        <div v-for="(suggestion, index) in user.suggestions" :key="index" class="suggestions">
           <input type="text" v-model="suggestion.name" placeholder="Nome">
           <input type="text" v-model="suggestion.data" placeholder="Data">
           <button class="close-button" @click="removeSuggestion(index)">Remover</button>
@@ -45,11 +45,11 @@
 </template>
 
 <script>
-import doctorService from '@/services/doctorService';
+import userService from '@/services/userService';
 export default {
   data() {
     return {
-      doctor: {},
+      user: {},
       editing: false
     };
   },
@@ -58,8 +58,8 @@ export default {
   },
   methods: {
     async getData(){
-      this.doctor = await doctorService.getDoctorById(this.$route.params.doctorId);
-      console.log( this.$store.state.doctor.doctor)
+      this.user = await userService.getDoctorById(this.$route.params.userId);
+      console.log( this.$store.state.user.user)
     },
     edit() {
       this.editing = true;
@@ -67,19 +67,19 @@ export default {
     async save() {
       // Aqui você pode adicionar a lógica para salvar as informações do médico
       this.editing = false;
-      await this.$store.dispatch('doctor/updateDoctor', this.doctor);
-      console.log(this.doctor)
+      await this.$store.dispatch('user/updateDoctor', this.user);
+      console.log(this.user)
     },
     cancel() {
       // Aqui você pode adicionar a lógica para cancelar a edição e reverter as alterações
-      // this.doctor = { ...this.doctorData };
+      // this.user = { ...this.userData };
       this.editing = false;
     },
     addSuggestion() {
-      this.doctor.suggestions.push({ name: '', data: '' });
+      this.user.suggestions.push({ name: '', data: '' });
     },
     removeSuggestion(index) {
-      this.doctor.suggestions.splice(index, 1);
+      this.user.suggestions.splice(index, 1);
     }
   }
 };

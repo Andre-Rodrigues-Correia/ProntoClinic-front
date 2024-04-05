@@ -1,4 +1,6 @@
 
+const BASE_URL = "http://localhost:3000/doctor"
+import axios from 'axios';
 
 const userService = {
   getToken(){
@@ -27,11 +29,45 @@ const userService = {
     return payloadToken.clinicId;
   },
   getDoctorId(){
-    const token = this.getToken();
+    const token = this.getToken()
     const payloadToken = this.getPayloadToken(token);
 
     return payloadToken._id;
-  }
+  },
+  async getUserById (userId) {
+    try {
+      const token = this.getToken();
+      const config = {
+        headers: {
+            Authorization: token,
+          },
+      }
+      console.log(userId)
+      const response = await axios.get(`${BASE_URL}/${userId}`, config);
+      console.log(response)
+      return response.data.message;
+    } catch (error) {
+      console.error('Erro ao atualizar o usuário:', error);
+      throw error;
+    }
+  },
+
+  async updateUser (user) {
+    try {
+      const token = this.getToken();
+      const config = {
+        headers: {
+            Authorization: token,
+          },
+      }
+      const response = await axios.put(`${BASE_URL}/${user._id}`, user, config);
+      console.log(response)
+      return response.data.message;
+    } catch (error) {
+      console.error('Erro ao atualizar o usuário:', error);
+      throw error;
+    }
+  },
 };
 
 export default userService;

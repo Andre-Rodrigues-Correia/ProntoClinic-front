@@ -52,7 +52,7 @@ export default {
         type: String,
         required: true,
       },
-      doctorId: {
+      userId: {
         type: String,
         required: true,
       }
@@ -100,7 +100,7 @@ export default {
 
         const appointment ={
             patientId: patientId,
-            doctorId: this.doctorId,
+            doctorId: this.userId,
             clinicId: this.clinicId,
             record: {},
             status: 'started',
@@ -117,7 +117,7 @@ export default {
         const appointment = await this.createAppointment(patient._id);
         await this.$store.dispatch('appointment/setAppointment', appointment);
         console.log(this.$store.state.appointment.appointment)
-        this.$router.push({ name: 'atendimento', params: { clinicId: this.clinicId, doctorId: this.doctorId, appointmentId: appointment._id } });
+        this.$router.push({ name: 'atendimento', params: { clinicId: this.clinicId, userId: this.userId, appointmentId: appointment._id } });
       }
     }
 }

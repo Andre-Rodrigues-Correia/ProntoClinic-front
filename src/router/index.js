@@ -7,13 +7,14 @@ import Appointment from '../views/Appointment.vue'
 import '../style.css'
 import UserAccount from '@/views/user/UserAccount.vue'
 import ClinicView from '@/views/ClinicView.vue'
+import CalendarView from '@/views/CalendarView.vue'
 
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/:clinicId/:doctorId',
+      path: '/:clinicId/:userId',
       name: 'home',
       component: HomeView,
       meta: { requiresAuth: true },
@@ -26,21 +27,28 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
-      path: '/:clinicId/:doctorId/atendimento/:appointmentId',
+      path: '/:clinicId/:userId/atendimento/:appointmentId',
       name: 'atendimento',
       component: Appointment,
       meta: { requiresAuth: true },
       props: true
     },
     {
-      path: '/:clinicId/:doctorId/minha-conta/',
+      path: '/:clinicId/:userId/agenda',
+      name: 'agenda',
+      component: CalendarView,
+      meta: { requiresAuth: true },
+      props: true
+    },
+    {
+      path: '/:clinicId/:userId/minha-conta/',
       name: 'account',
       component: UserAccount,
       meta: { requiresAuth: true },
       props: true
     },
     {
-      path: '/:clinicId/:doctorId/minha-clinica/',
+      path: '/:clinicId/:userId/minha-clinica/',
       name: 'clinic',
       component: ClinicView,
       meta: { requiresAuth: true },
