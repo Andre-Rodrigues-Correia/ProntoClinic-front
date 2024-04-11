@@ -50,6 +50,7 @@ import userService from '@/services/userService';
 
           console.log(this.user)
 
+
           await this.$store.dispatch('clinic/setClinic', payloadToken.clinicId);
           this.clinic = this.$store.state.clinic.clinic;
           console.log(this.clinic)

@@ -45,6 +45,7 @@
 </template>
 
 <script>
+import doctorService from '@/services/doctorService';
 import userService from '@/services/userService';
 export default {
   data() {
@@ -58,8 +59,8 @@ export default {
   },
   methods: {
     async getData(){
-      this.user = await userService.getDoctorById(this.$route.params.userId);
-      console.log( this.$store.state.user.user)
+      this.user = this.$store.state.user.user;
+      console.log(this.user)
     },
     edit() {
       this.editing = true;

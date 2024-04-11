@@ -22,6 +22,25 @@ const patientService = {
     }
   },
 
+  getPatientsForMakeAppointment: async () => {
+    try {
+      const token = userService.getToken()
+      const config = {
+        headers: {
+            Authorization: token,
+          },
+      }
+      const response = await axios.get(BASE_URL, config);
+      const allPatients = response.data.message.map((patient) => {
+        return {...patient, label: patient.name, value: patient._id}
+      })
+      return allPatients;
+    } catch (error) {
+      console.error('Erro ao recuperar o usuário:', error);
+      throw error;
+    }
+  },
+
   getPatientById: async (patientId) => {
     try {
       const token = userService.getToken()
@@ -31,6 +50,24 @@ const patientService = {
           },
       }
       const response = await axios.get(`${BASE_URL}/${patientId}`, config);
+      return response.data.message;
+    } catch (error) {
+      console.error('Erro ao atualizar o usuário:', error);
+      throw error;
+    }
+  },
+
+
+  getPatientforClinicById: async (clinicId) => {
+    try {
+      const token = userService.getToken();
+      const config = {
+        headers: {
+            Authorization: token,
+          },
+      }
+      const response = await axios.get(`${BASE_URL}/clinic/${clinicId}`, config);
+      console.log(response)
       return response.data.message;
     } catch (error) {
       console.error('Erro ao atualizar o usuário:', error);

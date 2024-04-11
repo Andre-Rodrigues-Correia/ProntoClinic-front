@@ -19,7 +19,6 @@
             
           </div>
           <div class="buttons-content">
-            <button @click="appointment(patient)"><span>Iniciar atendimento</span></button>
             <button @click="viewPatient(patient)"><font-awesome-icon class="icons" icon="eye" /></button>
             <button @click="editPatient(patient)"><font-awesome-icon class="icons" :icon="['fas', 'pen-to-square']" /></button>
             <button @click="deletePatient(patient)"><font-awesome-icon class="icons" :icon="['fas', 'trash']" /></button>
@@ -71,7 +70,8 @@ export default {
     methods: {
       async getData(){
         // this.patients = await patientService.getPatients();
-        await this.$store.dispatch('patients/fetchPatients');
+        console.log(this.clinicId)
+        await this.$store.dispatch('patients/fetchPatients', this.clinicId);
         this.patients = this.$store.state.patients.patients;
       },
       closeModal(){
@@ -96,29 +96,29 @@ export default {
         await this.$store.dispatch('patients/deletePatient', patient._id);
         this.patients = this.$store.state.patients.patients;
       },
-      async createAppointment(patientId){
+      // async createAppointment(patientId){
 
-        const appointment ={
-            patientId: patientId,
-            doctorId: this.userId,
-            clinicId: this.clinicId,
-            record: {},
-            status: 'started',
-            local: this.clinicId,
-            date: new Date()
-          }
+      //   const appointment ={
+      //       patientId: patientId,
+      //       doctorId: this.userId,
+      //       clinicId: this.clinicId,
+      //       record: {},
+      //       status: 'started',
+      //       local: this.clinicId,
+      //       date: new Date()
+      //     }
 
-          const response = await appointmentService.createAppointment(appointment)
+      //     const response = await appointmentService.createAppointment(appointment)
               
-          return response;
+      //     return response;
 
-      },
-      async appointment(patient){
-        const appointment = await this.createAppointment(patient._id);
-        await this.$store.dispatch('appointment/setAppointment', appointment);
-        console.log(this.$store.state.appointment.appointment)
-        this.$router.push({ name: 'atendimento', params: { clinicId: this.clinicId, userId: this.userId, appointmentId: appointment._id } });
-      }
+      // },
+      // async appointment(patient){
+      //   const appointment = await this.createAppointment(patient._id);
+      //   await this.$store.dispatch('appointment/setAppointment', appointment);
+      //   console.log(this.$store.state.appointment.appointment)
+      //   this.$router.push({ name: 'atendimento', params: { clinicId: this.clinicId, userId: this.userId, appointmentId: appointment._id } });
+      // }
     }
 }
   </script>

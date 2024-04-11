@@ -66,7 +66,6 @@ import ResumeAppointment from '@/components/appointmentComponents/ResumeAppointm
 import userService from '@/services/userService';
 import appointmentService from '@/services/appointmentsService';
 
-
 export default {
   components: {
     AppointmentHeader,
@@ -88,7 +87,8 @@ export default {
       userId: this.$route.params.userId,
       clinicId: this.$route.params.clinicId,
       appointmentId: this.$route.params.appointmentId,
-      patientId: this.$store.state.appointment.appointment.patientId
+      patientId: this.$store.state.appointment.appointment.patientId,
+      appointment: this.$store.state.appointment.appointment,
     }
   },
   computed: {
@@ -100,16 +100,19 @@ export default {
     },
   created (){
       this.getData();
+      this.startAppointiment();
   },
   methods: {
     async getData(){
       console.log(this.$route.params)
+      console.log(this.$store.state.appointment.appointment)
     },
     selectOption(option){
       this.selectedOption = option;
     },
     startAppointiment(){
       this.selectedOption = 'historic'
+      this.appointment.status = 'started'
       this.appointmentStarted = true
       this.stopwatch = setInterval(() => {
           this.time++;
@@ -119,6 +122,7 @@ export default {
       this.appointmentStarted = false
       this.time= 0
       this.stopwatch = null
+      this.appointment.status = 'completed'
       this.updateAppointment();
       this.$router.push({ name: 'home'});
     },
@@ -135,7 +139,7 @@ export default {
       
       const appointment = {
         record: record.medicalRecord,
-        ...this.$store.state.appointment.appointment
+        ...this.appointment
       }
       const response = await appointmentService.updateAppointment(appointment)
       

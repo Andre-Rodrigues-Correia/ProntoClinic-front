@@ -12,8 +12,9 @@
          <div v-for="appointment in patientAppointments" :key="appointment._id.$oid">
              <div class="anamnese">
                  <div class="anamnese-content">
+                    {{ console.log(appointment) }}
                     Data: {{ formatDate(appointment.date) }} <br/>
-                     {{ appointment.record.medicalRecord.anamnese[field]  || 'Sem dados para esse campo nesta consulta'}}
+                     {{ appointment.record.anamnese[field]  || 'Sem dados para esse campo nesta consulta'}}
                  </div>
                  <div class="buttons-content">
                      <button type="button" @click="viewAppointment(appointment.record.medicalRecord.anamnese[field])"><font-awesome-icon class="icons" icon="eye" /></button>

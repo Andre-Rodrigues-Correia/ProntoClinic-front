@@ -23,9 +23,9 @@ const mutations = {
 };
 
 const actions = {
- async fetchPatients({ commit }) {
+ async fetchPatients({ commit }, clinicId) {
     try {
-      const response = await patientService.getPatients();
+      const response = await patientService.getPatientforClinicById(clinicId);
       commit('SET_PATIENTS', response);
     } catch (error) {
       console.error('Error fetching patients', error);

@@ -1,8 +1,8 @@
 <template>
   <div class="content-calendar">
     <div class="controls">
-      <button @click="previousWeek">Semana Anterior</button>
-      <button @click="nextWeek">Próxima Semana</button>
+      <button class="create-button" @click="previousWeek">Semana Anterior</button>
+      <button class="create-button" @click="nextWeek">Próxima Semana</button>
     </div>
     <table>
       <thead>
@@ -16,52 +16,97 @@
           <td>{{ hour }}</td>
           <td v-for="day in week" :key="day">
             <div v-if="isCellEmpty(day, hour)">
-              <button @click="addAppointment(day, hour)">Adicionar Consulta</button>
+              <button class="add-button" @click="showModal(day, hour)">Adicionar Consulta</button>
             </div>
-            <div v-else>
-              <div v-for="appointment in getAppointments(day, hour)" :key="appointment.id">
-                {{ appointment.doctor }} - {{ appointment.patient }}
-                <button @click="editAppointment(appointment)">Editar</button>
-                <button @click="deleteAppointment(appointment.id)">Apagar</button>
+            <div v-else class="appointment-content">
+              <div class="appointment" v-for="appointment in getAppointments(day, hour)" :key="appointment.id">
+                <div class="appointment-infos">
+                  <p>
+                    Médico: {{ getInfoForDoctor(appointment.doctorId)  }}
+                  </p>
+                  <p>
+                    Paciente: {{ getInfoForPatient(appointment.patientId) }}
+                  </p>
+                  <p>
+
+                    Status: {{ statusMap[appointment.status] }}
+                  </p>
+                
+                  
+                </div>
+
+                <div class="appointment-buttons">
+                  <button @click="showEditModal(appointment)">Editar</button>
+                  <button @click="deleteAppointmentId(appointment._id)">Apagar</button>
+                </div>
+                
+                
               </div>
             </div>
           </td>
         </tr>
       </tbody>
     </table>
+    <MakeAppointmentModal :date="dateAppointment" :hour="hourAppointment" v-if="showAppointmentModal" @save="saveChanges" @close="closeModal"/>
+    <EditAppointmentModal :appointment="selectedAppointment" v-if="showEditAppointmentModal" @save="saveEditChanges" @close="closeEditModal"/>
   </div>
 </template>
 
 <script>
-import { ref } from 'vue';
-
+import { format } from 'date-fns'
+import MakeAppointmentModal from '@/components/generic/MakeAppointmentModal.vue';
+import appointmentService from '@/services/appointmentsService';
+import userService from '@/services/userService';
+import doctorService from '@/services/doctorService';
+import EditAppointmentModal from '@/components/generic/EditAppointmentModal.vue';
+import { mapActions } from 'vuex';
+import patientService from '@/services/patientService';
 export default {
+  components: {
+    MakeAppointmentModal,
+    EditAppointmentModal
+  },
+  async created(){
+    await this.getData()
+  },
   data() {
     return {
+      showAppointmentModal: false,
+      showEditAppointmentModal: false,
+      selectedAppointment: {},
+      dateAppointment: null,
+      hourAppointment: null,
+      doctorName: null,
       week: [],
       hours: ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"],
-      appointments: [
-    {
-        "id": 1712329478275,
-        "doctor": "asd",
-        "patient": "asd",
-        "date": "31/03/2024",
-        "hour": "09:00",
-        "clinicId": "asd"
-    },
-    {
-        "id": 1712329478275,
-        "doctor": "asd",
-        "patient": "asd",
-        "date": "01/04/2024",
-        "hour": "09:00",
-        "clinicId": "asd"
-    }
-],
-      currentWeekStart: new Date()
+      appointments: [],
+      doctorNames: [],
+      patientNames: [],
+      currentWeekStart: new Date(),
+      statusMap: {
+        scheduled: 'agendada',
+        completed: 'finalizada',
+        started: 'iniciada'
+      }
     };
   },
   methods: {
+    ...mapActions('appointments', ['setAppointments', 'deleteAppointment']),
+    async getData(){
+      await this.setAppointments();
+      this.appointments = this.$store.state.appointments.appointments;
+      console.log(this.appointments)
+      this.doctorNames = await doctorService.getDoctorsForMakeAppointment();
+      this.patientNames = await patientService.getPatients();
+    },
+    getInfoForDoctor(doctorId){
+      const doctor = this.doctorNames.find((doctor) => doctor._id == doctorId)
+      return doctor?.name ? doctor.name : ''
+    },
+    getInfoForPatient(patientId){
+      const patient = this.patientNames.find((patient) => patient._id == patientId)
+      return patient?.name ? patient.name : ''
+    },
     updateWeek() {
       const weekStart = new Date(this.currentWeekStart);
       weekStart.setDate(weekStart.getDate() - weekStart.getDay());
@@ -70,39 +115,17 @@ export default {
       const formattedWeek = [];
 
       for (let d = new Date(weekStart); d <= weekEnd; d.setDate(d.getDate() + 1)) {
-        formattedWeek.push(d.toLocaleDateString("pt-BR"));
+        formattedWeek.push(format(d, 'dd-MM-yyyy'));
       }
 
       this.week.splice(0, this.week.length, ...formattedWeek);
     },
-    addAppointment(day, hour) {
-      const doctor = prompt("Digite o nome do médico:");
-      const patient = prompt("Digite o nome do paciente:");
-      const clinicId = prompt("Digite o ID da clínica:");
-      if (doctor && patient && clinicId) {
-        const appointment = {
-          id: Date.now(),
-          doctor: doctor,
-          patient: patient,
-          date: day,
-          hour: hour,
-          clinicId: clinicId
-        };
-        this.appointments.push(appointment);
-      }
-      console.log(this.appointments)
-    },
-    editAppointment(appointment) {
-      const newDoctor = prompt("Digite o novo nome do médico:", appointment.doctor);
-      const newPatient = prompt("Digite o novo nome do paciente:", appointment.patient);
-      if (newDoctor && newPatient) {
-        appointment.doctor = newDoctor;
-        appointment.patient = newPatient;
-      }
-    },
-    deleteAppointment(appointmentId) {
+    async deleteAppointmentId(appointmentId) {
       if (confirm("Tem certeza que deseja apagar essa consulta?")) {
-        this.appointments = this.appointments.filter(appointment => appointment.id !== appointmentId);
+        const response = await this.deleteAppointment(appointmentId);
+        await this.setAppointments();
+        this.appointments = this.$store.state.appointments.appointments;
+        console.log(response)
       }
     },
     isCellEmpty(day, hour) {
@@ -118,6 +141,30 @@ export default {
     nextWeek() {
       this.currentWeekStart.setDate(this.currentWeekStart.getDate() + 7);
       this.updateWeek();
+    },
+    showEditModal(appointment){
+      this.selectedAppointment = appointment;
+      this.showEditAppointmentModal = true
+    },
+    showModal(day, hour){
+      console.log(day)
+      this.dateAppointment = day;
+      this.hourAppointment = hour
+      this.showAppointmentModal = true
+    },
+    closeEditModal(){
+      this.showEditAppointmentModal = false;
+    },
+    closeModal(){
+      this.showAppointmentModal = false
+    },
+    async saveChanges(){
+      this.showAppointmentModal = false
+      await this.setAppointments();
+      this.appointments = this.$store.state.appointments.appointments;
+    },
+    saveEditChanges(){
+      this.showEditAppointmentModal = false;
     }
   },
   mounted() {
@@ -131,9 +178,52 @@ export default {
 .content-calendar{
   width: 80%;
   margin: auto;
+  margin-bottom: 20px;
+}
+
+.add-button{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 35px;
+  background-color: var(--green-color);;
+  border: 1px solid var(--green-color);;
+  border-radius: 5px;
+  cursor: pointer
+}
+
+.add-button:hover {
+  background-color: white;
+  color: var(--secondary-color);
+}
+
+.controls{
+  display: flex;
+  justify-content: space-between
+}
+
+.appointment-content{
+  width: 100%;
+
+}
+
+.appointment-infos{
+  display: flex;
+  flex-direction: column;
+}
+
+.appointment-buttons{
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 2px;
+  justify-content: space-between;
 }
 
 table {
+  margin-top: 1rem;
+  background-color: var(--terciary-color);
   border-collapse: collapse;
   width: 100%;
 }
@@ -143,8 +233,8 @@ th, td {
   padding: 8px;
 }
 
-.controls {
-  margin-bottom: 20px;
+p{
+  font-size: small;
 }
 
 </style>

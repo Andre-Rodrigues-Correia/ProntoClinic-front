@@ -1,47 +1,97 @@
 <template>
   <div class="content-container">
-    <div class="sidebar">
-      <ul>
-        <li @click="showPatients">Pacientes</li>
-        <li @click="showCreatePatient">Cadastrar Paciente</li>
-      </ul>
+    <div class="message-user-content">
+      <h2>
+        Olá {{ user?.name ? user.name : 'Doutor' }}, abaixo suas consultas de hoje, dia {{ getFormatedDate() }}
+      </h2>
     </div>
-    <div class="inside-container">
-      <div v-if="selectedOption === 'patients'"> 
-        <Patients :clinicId="this.$route.params.clinicId" :userId="this.$route.params.userId"/>
+
+
+    <div class="appointments-content">
+      <div v-for="(appointment, index) in appointments" :key="index">
+        <div class="appointment-content">
+          <p>Paciente: {{ getInfoForPatient(appointment.patientId) }}</p>
+          <p>horário: {{ appointment.hour }}</p>
+          <p>Status: {{ statusMap[appointment.status] }}</p>
+          
+          <div class="appointments-buttons">
+            <button @click="startAppointment(appointment)" >Iniciar atendimento</button>
+            <button>Ver peciete</button>
+          </div>
+        </div>
+
       </div>
 
-      <div v-if="selectedOption === 'createPatient'">
-        <CreatePatient />
-      </div>
     </div>
+
   </div>
 </template>
 
 <script>
   import CreatePatient from '@/components/CreatePatient.vue';
   import Patients from '@/components/Patients.vue'
+  import appointmentService from '@/services/appointmentsService';
+  import doctorService from '@/services/doctorService';
+  import patientService from '@/services/patientService';
+  import appointment from '@/store/modules/appointment';
+  import { format } from 'date-fns';
+  import { mapActions } from 'vuex';
 
   export default {
     components: {
-      CreatePatient,
-      Patients
+      
     },
-    created (){
+    async created (){
       console.log(this.$route.params.clinicId)
+      await this.getData()
     },
     data() {
       return {
-        selectedOption: 'patients',
+        user: null,
+        appointments: [],
+        today: new Date(),
+        doctorNames: [],
+        patientNames: [],
+        statusMap: {
+          scheduled: 'agendada',
+          completed: 'finalizada',
+          started: 'iniciada'
+      }
+
       };
     },
     methods: {
-    showPatients() {
-      this.selectedOption = 'patients';
-    },
-    showCreatePatient() {
-      this.selectedOption = 'createPatient';
-    },
+      ...mapActions('appointment', ['setAppointment']),
+      async getData(){
+        const appointments = await appointmentService.getAllAppointments();
+        this.appointments = this.getAppointmentsForDay(appointments)
+        console.log(this.appointments)
+        this.doctorNames = await doctorService.getDoctorsForMakeAppointment();
+        this.patientNames = await patientService.getPatients();
+        this.user = this.$store.state.user.user;
+      },
+      getAppointmentsForDay(appointments){
+          return appointments.filter((appointment) => format(appointment.date, 'MM-dd-yyyy') == this.getFormatedDate(this.today) && appointment.status !== 'completed')
+      },
+      getFormatedDate(){
+        return format(this.today, 'dd-MM-yyyy')
+      },
+      getInfoForDoctor(doctorId){
+        const doctor = this.doctorNames.find((doctor) => doctor._id == doctorId)
+        return doctor?.name ? doctor.name : ''
+      },
+      getInfoForPatient(patientId){
+        const patient = this.patientNames.find((patient) => patient._id == patientId)
+        return patient?.name ? patient.name : ''
+      },
+      async startAppointment(appointment){
+        console.log(appointment)
+        await this.setAppointment(appointment)
+        console.log(this.$store.state.appointment.appointment)
+        // await this.$store.dispatch('appointment/setAppointment', appointment);
+        // console.log(this.$store.state.appointment.appointment)
+        this.$router.push({ name: 'atendimento', params: { appointmentId: appointment._id } });
+      }
     }
   }
 
@@ -50,6 +100,7 @@
 <style scoped>
 .content-container{
   display: flex;
+  flex-direction: column;
   width: 80%;
   background-color: rgb(255, 255, 255);
   margin: 5rem auto 2rem; /* Add margin-top to make room for the header */
@@ -58,40 +109,29 @@
   
 }
 
-.sidebar {
-  padding: 10px;
-  margin: 10px;
+.message-user-content{
+  margin: auto;
+  margin-bottom: 1rem;
 }
 
-.inside-container {
-  width: 80%;
-  border: solid 1px;
+.appointments-content{
+  margin: auto;
+}
+
+.appointment-content{
+  display: flex;
+  flex-direction: column;
+  border: 1px solid black;
   border-radius: 10px;
-  padding: 10px;
-  margin: 10px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.40); /* Add a subtle box shadow */
+  margin-bottom: 1rem;
+  padding: 1rem;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 
-ul{
-  list-style: none;
-  font-weight: bold;
-  text-align: center;
-
-  padding: 10px;
-}
-
-li {
-
-  margin: 10px;
-  padding: 10px;
-  cursor: pointer;
-  border: solid 1px black;
-  border-radius: 5px;
-  background-color: white;
-}
-
-li:hover {
-  background-color: #8188f5;
+.appointments-buttons{
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: space-between;
 }
 </style>
 

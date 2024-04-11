@@ -9,6 +9,8 @@ import clinic from './modules/clinic'
 import record from './modules/record'
 import exam from './modules/exam'
 import recipe from './modules/recipe'
+import appointments from './modules/appointments'
+
 
 export default new Vuex.Store({
   modules: {
@@ -19,6 +21,7 @@ export default new Vuex.Store({
     clinic,
     record,
     exam,
-    recipe
+    recipe,
+    appointments
   }
 })

@@ -7,9 +7,10 @@
             </h1>
 
             <nav>
-                <RouterLink class="header-button" to="/pacientes">PACIENTES</RouterLink>
-                <RouterLink class="header-button" :to="{ name: 'agenda', params: { clinicId: 'this.$route.params.clinicId' , userId: 'this.$route.params.userId '}}">Agenda</RouterLink>
+                <!-- <RouterLink class="header-button" :to="{ name: 'agenda', params: { clinicId: 'this.$route.params.clinicId' , userId: 'this.$route.params.userId '}}">Agenda</RouterLink> -->
                 <!-- <button class="header-button" @click="logout">SAIR</button> -->
+                <button class="header-button" @click="navigate('pacientes')">PACIENTES</button>
+                <button class="header-button" @click="navigate('agenda')">AGENDA</button>
                 <button class="header-button" @click="toggleUserMenu"><font-awesome-icon :icon="['fas', 'user']" /></button>
                 
                 <UserMenu v-if="userMenuOpen" @close="closeUserMenu"/>
@@ -30,12 +31,18 @@ export default {
     data(){
         return {
             userMenuOpen: false,
+            clinicId: this.$route.params.clinicId,
+            userId: this.$route.params.userId
         }
     },
     methods: {
         logout(){
             localStorage.removeItem('token');
             this.$router.push('/login'); 
+        },
+        navigate(destiny){
+            console.log(this.clinicId)
+            this.$router.push({ name: destiny});
         },
         toggleUserMenu() {
             this.userMenuOpen = !this.userMenuOpen;

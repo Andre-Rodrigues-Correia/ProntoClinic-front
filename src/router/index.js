@@ -8,6 +8,7 @@ import '../style.css'
 import UserAccount from '@/views/user/UserAccount.vue'
 import ClinicView from '@/views/ClinicView.vue'
 import CalendarView from '@/views/CalendarView.vue'
+import PatientsView from '@/views/PatientsView.vue'
 
 
 const router = createRouter({
@@ -21,9 +22,9 @@ const router = createRouter({
       props: true
     },
     {
-      path: '/pacientes',
+      path: '/:clinicId/:userId/pacientes',
       name: 'pacientes',
-      component: HomeView,
+      component: PatientsView,
       meta: { requiresAuth: true }
     },
     {

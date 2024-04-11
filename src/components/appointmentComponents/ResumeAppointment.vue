@@ -1,11 +1,35 @@
 <template>
-    <div class="appointment-summary">
-      <h2>Resumo da Consulta</h2>
-      <div id="pdf-content">
-        <!-- Anamnese -->
-        <div class="section">
-          <h3>Anamnese</h3>
-          <div class="info">
+
+
+  <div class="container">
+
+    <div id="resume-container">
+
+    
+
+    <div class="title">
+      <h2>Resumo do atendimento</h2>
+    </div>
+
+
+    <div class="resume-content">
+
+      <div class="infos" v-if="patient.cards?.length > 0">
+        <ul>
+              <li v-for="card in patient.cards" :key="card.id">
+                <div class="card">
+                  Título: {{ card.title }}<br/>
+                  Informação: {{ card.information }}
+                </div>
+                
+              </li>
+              <br>
+        </ul>
+      </div>
+
+      
+      <div class="infos">
+        <h3>Anamnese</h3>
             <p><strong>Queixa:</strong> {{ medicalRecord.anamnese.complaint }}</p>
             <p><strong>História do Problema Atual:</strong> {{ medicalRecord.anamnese.historyPresentIllness }}</p>
             <p><strong>História de Problema Anterior:</strong> {{ medicalRecord.anamnese.historyPreviousIllness }}</p>
@@ -13,28 +37,25 @@
             <p><strong>Alergias:</strong> {{ medicalRecord.anamnese.allergies }}</p>
             <p><strong>Observações:</strong> {{ medicalRecord.anamnese.observations }}</p>
             <p><strong>Outras Informações:</strong> {{ medicalRecord.anamnese.othersInformations }}</p>
-          </div>
-        </div>
-  
-        <!-- Prescrições -->
-        <div class="section">
-          <h3>Prescrições</h3>
-  
-          <!-- Exames -->
-          <div class="sub-section">
-            <h4>Exames</h4>
-            <ul>
-              <li v-for="exam in exams" :key="exam._id" :class="{ 'out-of-range': isOutOfRange(exam) }">
-                {{ exam.name }} - Resultado: 
+      </div>
+
+      <div class="infos">
+        <h3>Exames</h3>
+        <ul>
+              <li v-for="exam in exams" :key="exam._id">
+                {{ exam.name }}:
+                <br>
                 <span v-for="(result, index) in exam.results" :key="index">
-                  {{ result.date }}: {{ result.result }}{{ index !== exam.results.length - 1 ? ', ' : '' }}
+                  data: {{ result.date }}
+                  resultado: {{ result.result }}<br/>
                 </span>
               </li>
-            </ul>
+              <br>
+        </ul>
+      </div>
     </div>
-  
-          <!-- Medicamentos -->
-          <div class="sub-section">
+
+    <div class="infos" v-if="recipes?.length > 0">
             <h4>Medicamentos</h4>
             <ul>
               <li v-for="medicine in recipes" :key="medicine.medicine">
@@ -45,14 +66,12 @@
                 </div>
               </li>
             </ul>
-          </div>
-  
-          <!-- Outras Prescrições -->
-          <!-- <p class="info"><strong>Outras Prescrições:</strong> {{ appointment.prescriptions.otherPrescriptions }}</p> -->
-        </div>
-      </div>
-      <button @click="exportToPDF">Export to PDF</button>
     </div>
+
+  </div>
+  <button @click="exportToPDF">Export to PDF</button>
+  </div>
+   
   </template>
   
   <script>
@@ -96,6 +115,7 @@ import html2pdf from 'html2pdf.js';
       },
       async getAllInformationsAppointment(){
         this.patient = this.$store.state?.patient?.patient;
+        console.log(this.patient)
         this.exams = this.$store.state?.exam?.exam;
         this.recipes = this.$store.state?.recipe?.recipe;
 
@@ -122,10 +142,10 @@ import html2pdf from 'html2pdf.js';
 
       /////export pdf
       exportToPDF() {
-        const element = document.getElementById('pdf-content');
+        const element = document.getElementById('resume-container');
         const opt = {
             margin: 10,
-            filename: 'consulta_summary.pdf',
+            filename: 'resume-container.pdf',
             image: { type: 'jpeg', quality: 0.98 },
             html2canvas: { scale: 2 },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
@@ -139,7 +159,7 @@ import html2pdf from 'html2pdf.js';
             pagebreak: { mode: 'avoid-all' }, // Evita quebras de página
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
             margin: 10,
-            filename: 'consulta_summary.pdf',
+            filename: 'resume-container.pdf',
             image: { type: 'jpeg', quality: 0.98 },
             html2canvas: { scale: 2 },
         };
@@ -163,15 +183,55 @@ import html2pdf from 'html2pdf.js';
   };
   </script>
   
-  <style scoped>
+<style scoped>
+.container{
+  width: 100%;
+  border: solid 2px;
+  border-radius: 10px;
+  margin-bottom: 2rem;
+}
+
+.infos{
+  padding: 1rem;
+}
+
+.title{
+  text-align: center
+}
+
+.resume-container {
+  margin: auto;
+}
+.resume-content {
+  margin-top: 1rem;
+  padding: 1rem;
+}
+
+p{
+  margin-bottom: 0.3rem;
+}
+
+  .content {
+    width: 100%;
+        border: solid 2px;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+    
+  }
   .appointment-summary {
-    font-family: 'Arial', sans-serif;
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 20px;
+    width: 100%;
+    flex-direction: column;
+    padding: 2rem;
+    margin: auto;
     border: 1px solid #ccc;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: aqua;
+  }
+
+  .pdf-content{
+
+    justify-content: center;
   }
   
   .section {
