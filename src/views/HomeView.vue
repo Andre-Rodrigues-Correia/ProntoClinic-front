@@ -71,7 +71,9 @@
         this.user = this.$store.state.user.user;
       },
       getAppointmentsForDay(appointments){
-          return appointments.filter((appointment) => format(appointment.date, 'MM-dd-yyyy') == this.getFormatedDate(this.today) && appointment.status !== 'completed')
+        console.log(this.getFormatedDate(this.today))
+        console.log(appointments)
+          return appointments.filter((appointment) => format(appointment.date, 'dd-MM-yyyy') == this.getFormatedDate(this.today) && appointment.status !== 'completed')
       },
       getFormatedDate(){
         return format(this.today, 'dd-MM-yyyy')

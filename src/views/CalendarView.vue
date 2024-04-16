@@ -8,7 +8,7 @@
       <thead>
         <tr>
           <th></th>
-          <th v-for="day in week" :key="day">{{ day }}</th>
+          <th v-for="day in week" :key="day">{{ formatExibitionDate(day) }}</th>
         </tr>
       </thead>
       <tbody>
@@ -115,7 +115,7 @@ export default {
       const formattedWeek = [];
 
       for (let d = new Date(weekStart); d <= weekEnd; d.setDate(d.getDate() + 1)) {
-        formattedWeek.push(format(d, 'dd-MM-yyyy'));
+        formattedWeek.push(format(d, 'MM-dd-yyyy'));
       }
 
       this.week.splice(0, this.week.length, ...formattedWeek);
@@ -165,6 +165,9 @@ export default {
     },
     saveEditChanges(){
       this.showEditAppointmentModal = false;
+    },
+    formatExibitionDate(day){
+      return format(day, 'dd-MM-yyyy')
     }
   },
   mounted() {

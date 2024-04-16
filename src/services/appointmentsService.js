@@ -69,8 +69,9 @@ const appointmentService = {
           },
       }
       const response = await axios.get(BASE_URL, config);
-
+      
       const appointments = response.data.message.map((appointment) => {
+        console.log(appointment.date)
         return {...appointment, date: format(appointment.date, 'MM-dd-yyyy')}
     });
       console.log(appointments)

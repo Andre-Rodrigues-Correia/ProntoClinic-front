@@ -86,6 +86,7 @@ import { mapActions } from 'vuex';
         console.log(this.appointmentPatient)
       },
       async saveChanges() {
+        console.log(this.date)
         this.appointment = {
             clinicId: this.clinicId,
             doctorId: this.appointmentDoctor,
